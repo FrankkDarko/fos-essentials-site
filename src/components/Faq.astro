@@ -1,0 +1,25 @@
+---
+/**
+ * Rend la FAQ depuis `src/data/faq.json`.
+ *
+ * La même source alimente le balisage `FAQPage` posé par `Head.astro`. Google
+ * exige que les données structurées correspondent au texte réellement visible :
+ * les faire diverger n'est pas une négligence de style, c'est une cause de
+ * pénalité.
+ */
+import faq from '../data/faq.json';
+import { langFromPath } from '../i18n';
+
+const lang = langFromPath(Astro.url.pathname);
+---
+
+<div class="fos-faq not-content">
+	{
+		faq.map((item) => (
+			<section class="fos-faq__item" id={item.id}>
+				<h2 class="fos-faq__q">{item.q[lang] ?? item.q.en}</h2>
+				<p class="fos-faq__a">{item.a[lang] ?? item.a.en}</p>
+			</section>
+		))
+	}
+</div>

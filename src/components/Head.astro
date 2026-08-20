@@ -16,6 +16,7 @@
  * `sync-packs.mjs`, qui sont réécrites à chaque synchronisation.
  */
 import packs from '../data/packs.json';
+import faq from '../data/faq.json';
 import site from '../data/site.json';
 
 const SITE = Astro.site ?? new URL('https://essentials.frenchoasis.studio');
@@ -128,6 +129,23 @@ const head =
 				tag.tag === 'title' ? { ...tag, content: seoTitle } : tag
 			)
 		: Astro.locals.starlightRoute.head;
+
+if (section === 'faq') {
+	// Le balisage doit reprendre mot pour mot le texte affiche par Faq.astro :
+	// c'est la meme source, donc ils ne peuvent pas diverger.
+	graph.push({
+		'@type': 'FAQPage',
+		'@id': abs(`${Astro.url.pathname}#faq`),
+		mainEntity: faq.map((item) => ({
+			'@type': 'Question',
+			name: item.q[lang] ?? item.q.en,
+			acceptedAnswer: {
+				'@type': 'Answer',
+				text: item.a[lang] ?? item.a.en,
+			},
+		})),
+	});
+}
 
 const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph })
 	// Empêche une fermeture prématurée de la balise script.

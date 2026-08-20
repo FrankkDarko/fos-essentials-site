@@ -48,6 +48,13 @@ Nothing yet.
 - Hub layout: **Links** now sits directly under **Environment**, before the prefabs and
   the tool list.
 
+### Fixed
+
+- The banner stretched over hundreds of empty pixels inside an editor window. It centres
+  its text with flexible spacing, which does nothing in an inspector whose height follows
+  its content, but claimed all the available height in a window. It now keeps the height
+  of its content everywhere.
+
 ### Removed
 
 - The **branding settings** and **Discord and Shop links** rows of the environment

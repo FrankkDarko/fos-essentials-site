@@ -1,0 +1,107 @@
+[
+  {
+    "id": "quest",
+    "q": {
+      "en": "Do FOS Essentials packs work on Quest?",
+      "fr": "Les packs FOS Essentials fonctionnent-ils sur Quest ?",
+      "es": "¿Los packs de FOS Essentials funcionan en Quest?",
+      "de": "Funktionieren die FOS-Essentials-Packs auf Quest?"
+    },
+    "a": {
+      "en": "Yes. Every pack is written for cross-platform worlds: no heavy post-processing, controlled draw calls and respected network budgets. Quest is treated as the constraint that decides the defaults, not as an afterthought.",
+      "fr": "Oui. Chaque pack est écrit pour les mondes cross-platform : pas de post-traitement lourd, des draw calls maîtrisés et des budgets réseau respectés. Le Quest est traité comme la contrainte qui décide des réglages par défaut, pas comme une arrière-pensée.",
+      "es": "Sí. Cada pack está escrito para mundos multiplataforma: sin postprocesado pesado, draw calls controlados y presupuestos de red respetados. Quest se trata como la restricción que decide los ajustes por defecto, no como algo secundario.",
+      "de": "Ja. Jedes Pack ist für plattformübergreifende Welten geschrieben: kein schweres Post-Processing, kontrollierte Draw Calls und eingehaltene Netzwerkbudgets. Quest gilt als die Randbedingung, die die Standardwerte bestimmt, nicht als Nachgedanke."
+    }
+  },
+  {
+    "id": "coding",
+    "q": {
+      "en": "Do I need to know Udon or C# to use them?",
+      "fr": "Faut-il connaître Udon ou C# pour les utiliser ?",
+      "es": "¿Hace falta saber Udon o C# para usarlos?",
+      "de": "Muss ich Udon oder C# können, um sie zu benutzen?"
+    },
+    "a": {
+      "en": "No. Each pack ships prefabs that are already wired. You drop one into your scene and fill in the fields the documentation lists, usually a target transform, a canvas or a list of destinations.",
+      "fr": "Non. Chaque pack livre des prefabs déjà câblés. Vous en posez un dans votre scène et remplissez les champs listés par la documentation, en général un transform cible, un canvas ou une liste de destinations.",
+      "es": "No. Cada pack incluye prefabs ya conectados. Colocas uno en tu escena y rellenas los campos que indica la documentación, normalmente un transform de destino, un canvas o una lista de destinos.",
+      "de": "Nein. Jedes Pack liefert bereits verdrahtete Prefabs. Du ziehst eines in deine Szene und füllst die in der Dokumentation genannten Felder aus, meist ein Ziel-Transform, ein Canvas oder eine Liste von Zielen."
+    }
+  },
+  {
+    "id": "requirements",
+    "q": {
+      "en": "Which Unity and VRChat SDK versions are required?",
+      "fr": "Quelles versions d'Unity et du SDK VRChat sont nécessaires ?",
+      "es": "¿Qué versiones de Unity y del SDK de VRChat se necesitan?",
+      "de": "Welche Unity- und VRChat-SDK-Versionen werden benötigt?"
+    },
+    "a": {
+      "en": "Unity 2022.3.22f1 and VRChat SDK Worlds 3.10.4 or later, with the Built-in render pipeline in linear color space. The packs target projects managed by the VRChat Creator Companion.",
+      "fr": "Unity 2022.3.22f1 et VRChat SDK Worlds 3.10.4 ou plus récent, avec le pipeline de rendu Built-in en espace colorimétrique linéaire. Les packs visent les projets gérés par le VRChat Creator Companion.",
+      "es": "Unity 2022.3.22f1 y VRChat SDK Worlds 3.10.4 o posterior, con el pipeline de renderizado Built-in en espacio de color lineal. Los packs están pensados para proyectos gestionados con el VRChat Creator Companion.",
+      "de": "Unity 2022.3.22f1 und VRChat SDK Worlds 3.10.4 oder neuer, mit der Built-in-Render-Pipeline im linearen Farbraum. Die Packs richten sich an Projekte, die mit dem VRChat Creator Companion verwaltet werden."
+    }
+  },
+  {
+    "id": "core",
+    "q": {
+      "en": "Is FOS Essentials Core free, and do I always need it?",
+      "fr": "FOS Essentials Core est-il gratuit, et toujours nécessaire ?",
+      "es": "¿FOS Essentials Core es gratuito y siempre necesario?",
+      "de": "Ist FOS Essentials Core kostenlos und immer nötig?"
+    },
+    "a": {
+      "en": "The Core is free and required by every pack. It provides the shared base behaviour, the logging convention, the player registry and the Hub, which lists what is installed and what each pack needs.",
+      "fr": "Le Core est gratuit et exigé par tous les packs. Il fournit la classe de base commune, la convention de logs, le registre de joueurs et le Hub, qui liste ce qui est installé et ce que chaque pack exige.",
+      "es": "El Core es gratuito y lo requieren todos los packs. Aporta la clase base común, la convención de registros, el registro de jugadores y el Hub, que enumera lo instalado y lo que necesita cada pack.",
+      "de": "Der Core ist kostenlos und wird von jedem Pack benötigt. Er liefert die gemeinsame Basisklasse, die Logging-Konvention, das Spielerregister und das Hub, das anzeigt, was installiert ist und was jedes Pack braucht."
+    }
+  },
+  {
+    "id": "single-pack",
+    "q": {
+      "en": "Can I install a single pack without the others?",
+      "fr": "Puis-je installer un seul pack sans les autres ?",
+      "es": "¿Puedo instalar un solo pack sin los demás?",
+      "de": "Kann ich ein einzelnes Pack ohne die anderen installieren?"
+    },
+    "a": {
+      "en": "Yes, apart from the Core, which every pack needs. A few packs depend on others: Tablet System needs Localization and Teleport. The compatibility page lists every dependency.",
+      "fr": "Oui, hormis le Core, exigé par tous. Quelques packs dépendent d'autres : Tablet System exige Localization et Teleport. La page de compatibilité liste toutes les dépendances.",
+      "es": "Sí, salvo el Core, que necesitan todos. Algunos packs dependen de otros: Tablet System necesita Localization y Teleport. La página de compatibilidad enumera todas las dependencias.",
+      "de": "Ja, außer dem Core, den jedes Pack braucht. Einige Packs hängen von anderen ab: Tablet System benötigt Localization und Teleport. Die Kompatibilitätsseite listet alle Abhängigkeiten auf."
+    }
+  },
+  {
+    "id": "updating",
+    "q": {
+      "en": "What happens to my scene when I update a pack?",
+      "fr": "Que devient ma scène quand je mets un pack à jour ?",
+      "es": "¿Qué pasa con mi escena al actualizar un pack?",
+      "de": "Was passiert mit meiner Szene, wenn ich ein Pack aktualisiere?"
+    },
+    "a": {
+      "en": "Read the pack changelog first. A prefab you modified does not carry your changes over on its own, and a major version number means something you built has to be redone. The Hub refuses a combination whose Core is too old rather than failing later in game.",
+      "fr": "Lisez d'abord le changelog du pack. Un prefab que vous avez modifié ne conserve pas vos modifications tout seul, et un numéro de version majeur signifie que quelque chose que vous avez construit doit être refait. Le Hub refuse une combinaison dont le Core est trop ancien plutôt que d'échouer plus tard en jeu.",
+      "es": "Lee primero el registro de cambios del pack. Un prefab que hayas modificado no conserva tus cambios por sí solo, y un número de versión mayor significa que algo que construiste hay que rehacerlo. El Hub rechaza una combinación cuyo Core sea demasiado antiguo en lugar de fallar más tarde en el juego.",
+      "de": "Lies zuerst das Änderungsprotokoll des Packs. Ein Prefab, das du verändert hast, übernimmt deine Änderungen nicht von selbst, und eine Hauptversionsnummer bedeutet, dass etwas Gebautes neu gemacht werden muss. Das Hub verweigert eine Kombination mit zu altem Core, statt später im Spiel zu scheitern."
+    }
+  },
+  {
+    "id": "languages",
+    "q": {
+      "en": "In which languages is the Unity editor interface available?",
+      "fr": "Dans quelles langues l'interface Unity est-elle disponible ?",
+      "es": "¿En qué idiomas está disponible la interfaz de Unity?",
+      "de": "In welchen Sprachen ist die Unity-Oberfläche verfügbar?"
+    },
+    "a": {
+      "en": "English, French, Spanish and German. Inspectors, tooltips and menus all follow the language chosen in the Hub, which is stored per machine rather than per project.",
+      "fr": "Anglais, français, espagnol et allemand. Inspecteurs, infobulles et menus suivent la langue choisie dans le Hub, mémorisée par machine et non par projet.",
+      "es": "Inglés, francés, español y alemán. Inspectores, descripciones emergentes y menús siguen el idioma elegido en el Hub, guardado por máquina y no por proyecto.",
+      "de": "Englisch, Französisch, Spanisch und Deutsch. Inspektoren, Tooltips und Menüs folgen der im Hub gewählten Sprache, die pro Rechner und nicht pro Projekt gespeichert wird."
+    }
+  }
+]

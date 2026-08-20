@@ -78,7 +78,25 @@ export default defineConfig({
 								de: 'Kompatibilität',
 							},
 						},
+						{
+							label: 'FAQ',
+							slug: 'faq',
+							translations: {
+								fr: 'Questions fréquentes',
+								es: 'Preguntas frecuentes',
+								de: 'Häufige Fragen',
+							},
+						},
 					],
+				},
+				{
+					label: 'Guides',
+					translations: {
+						fr: 'Guides',
+						es: 'Guías',
+						de: 'Anleitungen',
+					},
+					items: [{ autogenerate: { directory: 'guides' } }],
 				},
 				{
 					label: 'Packs',

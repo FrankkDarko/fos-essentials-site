@@ -12,7 +12,13 @@
  *   FOS_UNITY_PROJECT="D:/chemin/vers/le/projet" npm run sync
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import {
+	readFileSync,
+	writeFileSync,
+	mkdirSync,
+	existsSync,
+	readdirSync,
+} from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -189,6 +195,22 @@ lines.push(`- [Installation](${SITE}/start/installation/): requirements and setu
 lines.push(
 	`- [Compatibility](${SITE}/start/compatibility/): which pack needs which Core version.`
 );
+lines.push(`- [FAQ](${SITE}/faq/): Quest, requirements, dependencies, updating.`);
+
+// Les guides sont lus sur le disque plutot que listes a la main : une page
+// ajoutee et oubliee ici disparaitrait de la carte donnee aux agents.
+const guidesDir = join(DOCS, 'guides');
+if (existsSync(guidesDir)) {
+	for (const file of readdirSync(guidesDir).sort()) {
+		if (!file.endsWith('.md') && !file.endsWith('.mdx')) continue;
+		const raw = readFileSync(join(guidesDir, file), 'utf8');
+		const title = /^title:\s*"?(.+?)"?\s*$/m.exec(raw)?.[1] ?? file;
+		const description = /^description:\s*"?(.+?)"?\s*$/m.exec(raw)?.[1] ?? '';
+		const slug = file.replace(/\.mdx?$/, '');
+		lines.push(`- [${title}](${SITE}/guides/${slug}/): ${description}`);
+	}
+}
+
 lines.push('');
 
 writeFileSync(join(PUBLIC, 'llms.txt'), lines.join(NL), 'utf8');

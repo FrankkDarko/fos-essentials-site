@@ -20,3 +20,8 @@ Unity 2022.3.22f1 - VRChat SDK Worlds 3.10.4 - Built-in render pipeline.
 - [All packs](https://essentials.frenchoasis.studio/catalog/): the full catalogue, free and paid.
 - [Installation](https://essentials.frenchoasis.studio/start/installation/): requirements and setup.
 - [Compatibility](https://essentials.frenchoasis.studio/start/compatibility/): which pack needs which Core version.
+- [FAQ](https://essentials.frenchoasis.studio/faq/): Quest, requirements, dependencies, updating.
+- [Making a VRChat world multilingual](https://essentials.frenchoasis.studio/guides/multilingual-vrchat-world/): How to translate the text and images of a VRChat world, why parallel arrays break, and how to remember a visitor's language between visits.
+- [Mirrors and frame rate in VRChat worlds](https://essentials.frenchoasis.studio/guides/vrchat-mirror-performance/): Why mirrors cost so much in a VRChat world, what a mirror actually renders, and how to keep them without wrecking performance on PC and Quest.
+- [Moderating a VRChat world](https://essentials.frenchoasis.studio/guides/vrchat-world-moderation/): What a world creator can and cannot do about disruptive visitors in VRChat, and how in-world moderation tools with roles actually work.
+- [World UI and draw calls in VRChat](https://essentials.frenchoasis.studio/guides/vrchat-world-ui-performance/): Why world-space canvases cost frames even when nobody looks at them, and how distance culling keeps a UI-heavy VRChat world fast.
