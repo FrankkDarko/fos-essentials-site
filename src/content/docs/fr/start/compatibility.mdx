@@ -1,0 +1,29 @@
+---
+title: Compatibilité
+description: Quelle version de pack exige quelle version de FOS Essentials Core.
+sidebar:
+  order: 2
+---
+
+import CompatibilityTable from '../../../../components/CompatibilityTable.astro';
+
+Un pack déclare le Core le plus ancien sur lequel il sait fonctionner. Le Hub
+compare ce numéro au Core réellement installé et refuse la combinaison si elle
+est trop ancienne, plutôt que d'échouer plus tard en jeu.
+
+<CompatibilityTable />
+
+## Lire les numéros de version
+
+FOS Essentials utilise **majeur . important . mineur**, jugé selon ce que le
+changement vous coûte *à vous*, et non selon l'ampleur technique de la
+modification.
+
+| Position | Ce que ça signifie pour votre monde |
+|---|---|
+| Majeur | Refonte : quelque chose que vous avez construit doit être refait |
+| Important | L'outil sait faire quelque chose qu'il ne savait pas faire |
+| Mineur | Un correctif, ou un ajout que vous ne remarquerez peut-être pas |
+
+Lisez le changelog du pack avant de mettre à jour. Un prefab que vous avez
+modifié ne conserve jamais vos modifications tout seul.

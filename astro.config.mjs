@@ -48,9 +48,33 @@ export default defineConfig({
 						de: 'Loslegen',
 					},
 					items: [
-						{ label: 'All packs', slug: 'catalog' },
-						{ label: 'Installation', slug: 'start/installation' },
-						{ label: 'Compatibility', slug: 'start/compatibility' },
+						{
+							label: 'All packs',
+							slug: 'catalog',
+							translations: {
+								fr: 'Tous les packs',
+								es: 'Todos los packs',
+								de: 'Alle Packs',
+							},
+						},
+						{
+							label: 'Installation',
+							slug: 'start/installation',
+							translations: {
+								fr: 'Installation',
+								es: 'Instalación',
+								de: 'Installation',
+							},
+						},
+						{
+							label: 'Compatibility',
+							slug: 'start/compatibility',
+							translations: {
+								fr: 'Compatibilité',
+								es: 'Compatibilidad',
+								de: 'Kompatibilität',
+							},
+						},
 					],
 				},
 				{
@@ -58,7 +82,13 @@ export default defineConfig({
 					items: [{ autogenerate: { directory: 'packs' } }],
 				},
 				{
+					// « Changelogs » reste tel quel en français : c'est le mot employé
+					// dans le reste des pages françaises.
 					label: 'Changelogs',
+					translations: {
+						es: 'Registros de cambios',
+						de: 'Änderungsprotokolle',
+					},
 					collapsed: true,
 					items: [{ autogenerate: { directory: 'changelogs' } }],
 				},

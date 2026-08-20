@@ -1,0 +1,39 @@
+---
+title: Unity-Werkzeuge für VRChat-Welten
+description: Unity-Werkzeuge für VRChat-Welten — UdonSharp-Packs von French Oasis Studio.
+template: splash
+hero:
+  title: FOS Essentials
+  tagline: Werkzeuge für VRChat-Welten, die sich wie Produkte verhalten und nicht wie Codeschnipsel. Auf UdonSharp aufgebaut, dokumentiert, versioniert und in vier Sprachen übersetzt.
+  image:
+    file: ../../../assets/logo.png
+  actions:
+    - text: Packs ansehen
+      link: /de/catalog/
+      icon: right-arrow
+    - text: Core installieren
+      link: /de/start/installation/
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+	<Card title="Eine gemeinsame Grundlage" icon="puzzle">
+		Jedes Pack setzt auf **FOS Essentials Core** auf: eine Basisklasse, eine
+		Logging-Konvention, ein Hub, der zeigt, was installiert ist und was es
+		voraussetzt.
+	</Card>
+	<Card title="Vier Sprachen, im Editor" icon="translate">
+		Inspektoren, Tooltips und Menüs sind auf Englisch, Französisch, Spanisch
+		und Deutsch übersetzt. Dein Team liest das Werkzeug in seiner Sprache.
+	</Card>
+	<Card title="Für Quest gedacht" icon="rocket">
+		Für plattformübergreifende Welten geschrieben: kein schweres
+		Post-Processing, kontrollierte Draw Calls, eingehaltene Netzwerkbudgets.
+	</Card>
+	<Card title="Dokumentiert und versioniert" icon="open-book">
+		Jedes Pack bringt eine README und ein Änderungsprotokoll mit. Brüche werden
+		angekündigt, Mindestversionen des Core prüft das Hub.
+	</Card>
+</CardGrid>

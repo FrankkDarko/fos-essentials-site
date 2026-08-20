@@ -1,0 +1,28 @@
+---
+title: Compatibilidad
+description: Qué versión de pack necesita qué versión de FOS Essentials Core.
+sidebar:
+  order: 2
+---
+
+import CompatibilityTable from '../../../../components/CompatibilityTable.astro';
+
+Cada pack declara el Core más antiguo con el que puede funcionar. El Hub compara
+ese número con el Core realmente instalado y rechaza la combinación si es
+demasiado antigua, en lugar de fallar más tarde durante la ejecución.
+
+<CompatibilityTable />
+
+## Leer los números de versión
+
+FOS Essentials usa **mayor . significativo . menor**, según lo que el cambio te
+cuesta *a ti*, no según su magnitud técnica.
+
+| Posición | Qué significa para tu mundo |
+|---|---|
+| Mayor | Rehacer: algo que construiste hay que volver a hacerlo |
+| Significativo | La herramienta gana una capacidad que no tenía |
+| Menor | Una corrección, o un añadido que quizá ni notes |
+
+Lee el registro de cambios del pack antes de actualizar. Un prefab que hayas
+modificado nunca conserva tus cambios por sí solo.
