@@ -29,6 +29,7 @@ const unityRoot = resolve(
 const packs = JSON.parse(
 	readFileSync(join(siteRoot, 'src/data/packs.json'), 'utf8')
 );
+const byId = new Map(packs.map((p) => [p.id, p]));
 
 const DOCS = join(siteRoot, 'src/content/docs');
 const GENERATED_NOTE =
@@ -56,9 +57,29 @@ function rewriteLinks(body, pack) {
 		.replace(/\]\(\.?\/?README\.md\)/g, `](/${pack.docsSlug}/)`);
 }
 
-/** Échappe une valeur de frontmatter YAML en chaîne entre guillemets. */
-function yamlString(value) {
-	return JSON.stringify(String(value));
+/**
+ * Bandeau de version en tête de page.
+ *
+ * Le H1 du README, qui portait la version, est retiré au profit du frontmatter.
+ * Sans ce bandeau, la page ne dirait plus quelle version elle documente — et un
+ * décalage entre le site et le pack passerait inaperçu, ce qui est arrivé le
+ * 20/08/2026 avec le Core et Tablet System.
+ */
+function versionBanner(pack) {
+	const parts = [`**Version ${pack.version}**`];
+	if (pack.minimumCore) {
+		parts.push(`requires FOS Essentials Core ${pack.minimumCore} or later`);
+	}
+	if (pack.requires.length) {
+		const deps = pack.requires
+			.map((id) => {
+				const dep = byId.get(id);
+				return dep ? `${dep.name} ${dep.version}` : id;
+			})
+			.join(', ');
+		parts.push(`also requires ${deps}`);
+	}
+	return `${parts.join(' · ')}\n`;
 }
 
 function emit(targetPath, frontmatter, body) {
@@ -67,6 +88,15 @@ function emit(targetPath, frontmatter, body) {
 		.map(([k, v]) => `${k}: ${v}`)
 		.join('\n');
 	writeFileSync(targetPath, `---\n${head}\n---\n\n${GENERATED_NOTE}\n\n${body}\n`, 'utf8');
+}
+
+/**
+ * Échappe une valeur de frontmatter. Les règles de citation JSON sont un
+ * sous-ensemble valide du YAML entre guillemets, ce qui évite un échappement
+ * maison.
+ */
+function yamlString(value) {
+	return JSON.stringify(String(value));
 }
 
 let written = 0;
@@ -90,7 +120,7 @@ for (const pack of packs) {
 				editUrl: 'false',
 				sidebar: `\n  order: ${pack.order}`,
 			},
-			body
+			`${versionBanner(pack)}\n${body}`
 		);
 		written++;
 	} else {

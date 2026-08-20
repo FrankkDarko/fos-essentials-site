@@ -3,7 +3,7 @@
     "id": "core",
     "name": "FOS Essentials Core",
     "shortName": "Core",
-    "version": "1.1.2",
+    "version": "1.2.0",
     "edition": "free",
     "price": null,
     "minimumCore": null,
@@ -98,11 +98,14 @@
     "id": "tablet-system",
     "name": "FOS Tablet System — Standard",
     "shortName": "Tablet System",
-    "version": "1.6.0",
+    "version": "2.1.0",
     "edition": "paid",
     "price": null,
     "minimumCore": "1.1.0",
-    "requires": ["localization", "teleport"],
+    "requires": [
+      "localization",
+      "teleport"
+    ],
     "sourcePath": "Assets/FOS/TabletSystem/Standard",
     "docsSlug": "packs/tablet-system",
     "order": 5,
@@ -121,7 +124,9 @@
     "edition": "paid",
     "price": null,
     "minimumCore": "1.1.0",
-    "requires": ["tablet-system"],
+    "requires": [
+      "tablet-system"
+    ],
     "sourcePath": "Assets/FOS/TabletSystem/Pro",
     "docsSlug": "packs/tablet-system-pro",
     "order": 6,

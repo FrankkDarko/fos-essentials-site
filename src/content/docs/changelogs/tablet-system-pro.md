@@ -28,7 +28,7 @@ Nothing yet.
 
 First release.
 
-**Requires FOS Tablet System Standard 1.6.0 and FOS Essentials Core 1.1.0.**
+**Requires FOS Tablet System Standard 2.1.0 and FOS Essentials Core 1.1.0.**
 
 Pro **adds** components beside the Standard ones. It replaces nothing on your prefab, so
 adopting it costs none of the wiring you already did, and everything keeps working exactly

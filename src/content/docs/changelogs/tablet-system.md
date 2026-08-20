@@ -24,10 +24,10 @@ Nothing yet.
 
 ---
 
-## [1.6.0] — 2026-08-20
+## [2.1.0] — 2026-08-20
 
 Groundwork for the **Pro** edition. On its own, Standard behaves exactly as it did in
-1.5.0.
+2.0.0.
 
 ### Added
 
@@ -61,7 +61,7 @@ Groundwork for the **Pro** edition. On its own, Standard behaves exactly as it d
 ### Notes
 
 Without the Pro edition, the capability matrix and the account list are empty and
-permissions are derived from rank — every decision is the one 1.5.0 made.
+permissions are derived from rank — every decision is the one 2.0.0 made.
 
 One visible difference: in the role panel, promoting the founder *to admin* is no longer
 offered. It was a no-op, since the founder is already admin, and the interface now matches
@@ -69,10 +69,14 @@ the authority instead of following a rule of its own.
 
 ---
 
-## [1.5.0] — 2026-08-19
+## [2.0.0] — 2026-08-19
 
 Full rewrite on the **FOS Essentials Core**. The tablet does the same job as before, and
 almost none of it is the same code.
+
+**Not backward compatible with 1.0.x** — hence the major version. Class names, fields and
+several method names differ, and a prefab you have modified does not carry over on its
+own. The upgrade path is at the end of this entry.
 
 **Requires FOS Essentials Core 1.1.0.** Ships with **FOS Localization 1.0.0** and
 **FOS Teleport 1.0.0**, both used by the tablet.
@@ -173,7 +177,7 @@ First sold release.
   remembered for the current instance only.
 
 [Unreleased]: https://github.com/FrankkDarko/fos-essentials
-[1.5.0]: https://github.com/FrankkDarko/fos-essentials
+[2.0.0]: https://github.com/FrankkDarko/fos-essentials
 [1.0.2]: https://github.com/FrankkDarko/fos-essentials
 [1.0.0]: https://github.com/FrankkDarko/fos-essentials
 
