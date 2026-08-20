@@ -1,0 +1,38 @@
+{
+  "name": "FOS Essentials",
+  "id": "studio.frenchoasis.vpm",
+  "url": "https://essentials.frenchoasis.studio/index.json",
+  "author": "French Oasis Studio",
+  "description": "Unity tools for VRChat worlds by French Oasis Studio.",
+  "infoLink": {
+    "text": "FOS Essentials",
+    "url": "https://essentials.frenchoasis.studio"
+  },
+  "packages": {
+    "studio.frenchoasis.core": {
+      "versions": {
+        "1.2.0": {
+          "name": "studio.frenchoasis.core",
+          "displayName": "FOS Essentials Core",
+          "version": "1.2.0",
+          "unity": "2022.3",
+          "description": "The shared foundation of every FOS Essentials tool: base behaviour, logging, ownership, player registry, localized inspectors and the Hub.",
+          "author": {
+            "name": "French Oasis Studio",
+            "url": "https://frenchoasis.studio"
+          },
+          "documentationUrl": "https://essentials.frenchoasis.studio/packs/core/",
+          "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/core/",
+          "vpmDependencies": {
+            "com.vrchat.worlds": "3.10.4"
+          },
+          "legacyFolders": {
+            "Assets/FOS/Core": ""
+          },
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/core-v1.2.0/studio.frenchoasis.core-1.2.0.zip",
+          "zipSHA256": "faf42fa22c7a26c52a378fda085b7d02a74b10313578f5ef49d5823dc0029aac"
+        }
+      }
+    }
+  }
+}

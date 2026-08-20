@@ -41,6 +41,13 @@ Nothing yet.
 - The Hub reports every unmet requirement on a tool, telling a **missing** pack apart from
   one that is merely **too old**, and naming the version actually installed.
 
+### Fixed
+
+- **The Core no longer ships a 15 MB branding logo.** It was a 4096x4096 image drawn at
+  about 64 pixels in inspector headers. At 512x512 it looks the same and the pack is 58
+  times lighter, which matters now that the Core is installed and updated through the
+  Creator Companion by everyone using any FOS pack.
+
 ### Changed
 
 - The former single shop URL is moved into the store list the first time the editor
@@ -48,8 +55,16 @@ Nothing yet.
 - Hub layout: **Links** now sits directly under **Environment**, before the prefabs and
   the tool list.
 
+- **The Hub shows the rest of the line**, with a **Discover** button opening that pack's
+  page. Until now the Hub could only list what was loaded, so somebody running the Core
+  and the free tools had no way of knowing the other packs existed. The section hides
+  itself entirely once everything is installed.
+
 ### Fixed
 
+- The shop dropdown opened in the corner of the window instead of under its button. Its
+  rectangle is now reserved before drawing rather than read back afterwards, which does
+  not return the same thing during the click event as during the repaint.
 - The banner stretched over hundreds of empty pixels inside an editor window. It centres
   its text with flexible spacing, which does nothing in an inspector whose height follows
   its content, but claimed all the available height in a window. It now keeps the height

@@ -1,0 +1,35 @@
+---
+title: "Téléchargement"
+description: "Installez les packs FOS Essentials depuis le VRChat Creator Companion. Un listing, un paquet par outil, les dépendances résolues pour vous."
+sidebar:
+  order: 0
+---
+
+import VpmListing from '../../../components/VpmListing.astro';
+
+Les packs FOS Essentials sont distribués sous forme de **listing VPM**. Vous ajoutez le
+listing une fois, puis vous installez chaque outil séparément depuis le Creator
+Companion, et les mises à jour y apparaissent comme pour n'importe quel autre paquet.
+
+<VpmListing />
+
+## Le Core suit tout seul
+
+Chaque outil déclare FOS Essentials Core comme dépendance. Installez n'importe quel pack
+et le Creator Companion tire le Core avec lui — rien à installer dans un ordre
+particulier, et aucun moyen de se retrouver avec un outil dont le Core manque ou est trop
+ancien.
+
+## Si vous avez déjà installé un pack à la main
+
+Rien à nettoyer. Chaque paquet déclare le dossier qu'occupait sa version manuelle, et le
+Creator Companion supprime `Assets/FOS/<Pack>` en installant. Les identifiants d'assets
+sont conservés : une scène déjà câblée continue de fonctionner.
+
+Sauvegardez tout de même votre projet au préalable, comme avant toute modification de
+paquets.
+
+## Les packs payants ne sont pas dans le listing
+
+Un listing VPM est public, et tout ce vers quoi il pointe l'est aussi. Tablet System
+Standard et Pro restent des `.unitypackage` livrés par la boutique.

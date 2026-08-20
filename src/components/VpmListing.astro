@@ -1,0 +1,55 @@
+---
+/**
+ * Bouton d'ajout du listing au Creator Companion, et liste des paquets publiés.
+ *
+ * Le lien `vcc://` est un schéma d'URL enregistré par le Creator Companion à
+ * l'installation : cliquer ouvre l'application avec le dépôt déjà renseigné.
+ * L'URL brute reste affichée juste en dessous, parce que le schéma ne
+ * fonctionne que si le VCC est installé — et parce qu'un lien qu'on ne peut pas
+ * lire est un lien qu'on ne colle pas ailleurs.
+ */
+import packs from '../data/packs.json';
+import { langFromPath, localized, UI } from '../i18n';
+
+const LISTING = 'https://essentials.frenchoasis.studio/index.json';
+const lang = langFromPath(Astro.url.pathname);
+const t = UI[lang];
+
+const published = packs
+	.filter((p) => p.vpmPublished)
+	.sort((a, b) => a.order - b.order);
+---
+
+<div class="fos-vpm not-content">
+	<a class="fos-btn fos-btn--primary fos-vpm__add" href={`vcc://vpm/addRepo?url=${encodeURIComponent(LISTING)}`}>
+		{t.addToVcc}
+	</a>
+
+	<p class="fos-vpm__url-label">{t.orPasteUrl}</p>
+	<code class="fos-vpm__url">{LISTING}</code>
+
+	<table class="fos-table">
+		<thead>
+			<tr>
+				<th>{t.pack}</th>
+				<th>{t.packageId}</th>
+				<th>{t.version}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{
+				published.map((pack) => (
+					<tr>
+						<td>
+							<a href={localized(lang, pack.docsSlug)}>{pack.name}</a>
+						</td>
+						<td>
+							<code>{pack.vpmName}</code>
+						</td>
+						<td>{pack.version}</td>
+					</tr>
+				))
+			}
+		</tbody>
+	</table>
+</div>

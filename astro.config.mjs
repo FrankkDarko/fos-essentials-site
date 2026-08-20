@@ -52,6 +52,15 @@ export default defineConfig({
 					},
 					items: [
 						{
+							label: 'Download',
+							slug: 'download',
+							translations: {
+								fr: 'Téléchargement',
+								es: 'Descargas',
+								de: 'Download',
+							},
+						},
+						{
 							label: 'All packs',
 							slug: 'catalog',
 							translations: {

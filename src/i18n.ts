@@ -27,6 +27,9 @@ type Dict = Record<string, string>;
 
 export const UI: Record<Lang, Dict> = {
 	en: {
+		addToVcc: 'Add to VRChat Creator Companion',
+		orPasteUrl: 'Or paste this URL into VCC, under Settings then Packages then Add Repository:',
+		packageId: 'Package ID',
 		shop: 'Shop',
 		shopChoose: 'Choose your store',
 		madeBy: 'Made by',
@@ -50,6 +53,9 @@ export const UI: Record<Lang, Dict> = {
 		none: 'None',
 	},
 	fr: {
+		addToVcc: 'Ajouter au VRChat Creator Companion',
+		orPasteUrl: 'Ou collez cette URL dans le VCC, sous Settings puis Packages puis Add Repository :',
+		packageId: 'Identifiant du paquet',
 		shop: 'Boutique',
 		shopChoose: 'Choisissez votre boutique',
 		madeBy: 'Réalisé par',
@@ -73,6 +79,9 @@ export const UI: Record<Lang, Dict> = {
 		none: 'Aucune',
 	},
 	es: {
+		addToVcc: 'Añadir al VRChat Creator Companion',
+		orPasteUrl: 'O pega esta URL en el VCC, en Settings, Packages y Add Repository:',
+		packageId: 'ID del paquete',
 		shop: 'Tienda',
 		shopChoose: 'Elige tu tienda',
 		madeBy: 'Creado por',
@@ -96,6 +105,9 @@ export const UI: Record<Lang, Dict> = {
 		none: 'Ninguna',
 	},
 	de: {
+		addToVcc: 'Zum VRChat Creator Companion hinzufügen',
+		orPasteUrl: 'Oder füge diese URL im VCC unter Settings, Packages, Add Repository ein:',
+		packageId: 'Paket-ID',
 		shop: 'Shop',
 		shopChoose: 'Wähle deinen Shop',
 		madeBy: 'Erstellt von',

@@ -287,3 +287,34 @@
 	color: var(--sl-color-gray-3);
 	font-size: var(--sl-text-xs);
 }
+
+/* --- Listing VPM ----------------------------------------------------- */
+
+.fos-vpm {
+	margin-top: 1.5rem;
+}
+
+.fos-vpm__add {
+	display: inline-block;
+	padding: 0.6rem 1.2rem;
+	font-size: var(--sl-text-body);
+	font-weight: 600;
+}
+
+.fos-vpm__url-label {
+	margin: 1.2rem 0 0.4rem;
+	color: var(--sl-color-gray-3);
+	font-size: var(--sl-text-sm);
+}
+
+.fos-vpm__url {
+	display: block;
+	padding: 0.6rem 0.8rem;
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 0.35rem;
+	background: var(--sl-color-black);
+	color: var(--sl-color-text-accent);
+	font-size: var(--sl-text-sm);
+	overflow-x: auto;
+	white-space: nowrap;
+}

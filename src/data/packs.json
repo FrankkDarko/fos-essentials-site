@@ -22,7 +22,9 @@
       "fr": "Socle commun de tous les outils pour mondes VRChat",
       "es": "Base común de todas las herramientas para mundos de VRChat",
       "de": "Gemeinsame Grundlage aller Werkzeuge für VRChat-Welten"
-    }
+    },
+    "vpmName": "studio.frenchoasis.core",
+    "vpmPublished": true
   },
   {
     "id": "teleport",
@@ -47,7 +49,9 @@
       "fr": "Téléportation à sens unique pour mondes VRChat",
       "es": "Teletransporte de sentido único para mundos de VRChat",
       "de": "Einseitiger Teleport für VRChat-Welten"
-    }
+    },
+    "vpmName": "studio.frenchoasis.teleport",
+    "vpmPublished": false
   },
   {
     "id": "ui-culling",
@@ -72,7 +76,9 @@
       "fr": "Désactiver les UI par la distance dans VRChat",
       "es": "Desactivar las UI por distancia en VRChat",
       "de": "Welt-UI nach Entfernung abschalten in VRChat"
-    }
+    },
+    "vpmName": "studio.frenchoasis.uiculling",
+    "vpmPublished": false
   },
   {
     "id": "mirror",
@@ -97,7 +103,9 @@
       "fr": "Gestion des miroirs pour mondes VRChat",
       "es": "Gestión de espejos para mundos de VRChat",
       "de": "Spiegelverwaltung für VRChat-Welten"
-    }
+    },
+    "vpmName": "studio.frenchoasis.mirror",
+    "vpmPublished": false
   },
   {
     "id": "localization",
@@ -122,7 +130,9 @@
       "fr": "Traduire un monde VRChat dans toutes les langues",
       "es": "Traducir un mundo de VRChat a cualquier idioma",
       "de": "Eine VRChat-Welt in jede Sprache übersetzen"
-    }
+    },
+    "vpmName": "studio.frenchoasis.localization",
+    "vpmPublished": false
   },
   {
     "id": "sync-doctor",
@@ -147,7 +157,9 @@
       "fr": "Trouver les bugs de synchro VRChat qui ne disent rien",
       "es": "Encuentra los errores de sincronización de VRChat que no avisan",
       "de": "Findet die VRChat-Sync-Fehler, die sich nie melden"
-    }
+    },
+    "vpmName": "studio.frenchoasis.syncdoctor",
+    "vpmPublished": false
   },
   {
     "id": "tablet-system",
@@ -175,7 +187,9 @@
       "fr": "Tablette de modération pour mondes VRChat",
       "es": "Tableta de moderación para mundos de VRChat",
       "de": "Moderations-Tablet für VRChat-Welten"
-    }
+    },
+    "vpmName": "studio.frenchoasis.tabletsystem",
+    "vpmPublished": false
   },
   {
     "id": "tablet-system-pro",
@@ -202,6 +216,8 @@
       "fr": "Rôles et permissions sur mesure pour la modération VRChat",
       "es": "Roles y permisos a medida para la moderación en VRChat",
       "de": "Eigene Rollen und Rechte für die VRChat-Moderation"
-    }
+    },
+    "vpmName": "studio.frenchoasis.tabletsystem.pro",
+    "vpmPublished": false
   }
 ]

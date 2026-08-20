@@ -19,3 +19,6 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# Paquets VPM construits localement, publies via GitHub Releases.
+dist-vpm/
