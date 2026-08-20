@@ -208,6 +208,17 @@ for (const pack of publishable) {
 
 // --- Listing servi au Creator Companion ------------------------------
 
+const listingPath = join(siteRoot, 'public/index.json');
+
+// Les versions deja publiees sont conservees. Un projet dont le
+// vpm-manifest.json verrouille une ancienne version ne peut plus la resoudre
+// si elle disparait du listing : le Creator Companion la declare introuvable
+// et le projet ne s'ouvre plus correctement. Un listing s'accumule, il ne se
+// remplace pas.
+const previous = existsSync(listingPath)
+	? JSON.parse(readFileSync(listingPath, 'utf8'))
+	: { packages: {} };
+
 const listing = {
 	name: 'FOS Essentials',
 	id: 'studio.frenchoasis.vpm',
@@ -215,23 +226,46 @@ const listing = {
 	author: site.studio,
 	description: 'Unity tools for VRChat worlds by French Oasis Studio.',
 	infoLink: { text: 'FOS Essentials', url: SITE_URL },
-	packages: {},
+	packages: structuredClone(previous.packages ?? {}),
 };
 
 for (const entry of built) {
-	listing.packages[entry.pack.vpmName] = {
-		versions: {
-			[entry.version]: {
-				...manifest(entry.pack, entry.version),
-				url: entry.url,
-				zipSHA256: entry.sha256,
-			},
-		},
+	const slot = (listing.packages[entry.pack.vpmName] ??= { versions: {} });
+	const already = slot.versions[entry.version];
+
+	// Une version publiee est un contenu fige. Si le zip reconstruit differe de
+	// celui deja annonce, c'est qu'on a modifie un pack sans changer son
+	// numero : le Creator Companion refuserait l'installation sur une somme de
+	// controle, ou pire, servirait deux contenus sous un meme numero.
+	if (already && already.zipSHA256 !== entry.sha256) {
+		console.error(
+			`build-vpm: ${entry.pack.vpmName} ${entry.version} est deja publie avec ` +
+				`une autre empreinte.
+  publie    : ${already.zipSHA256}
+  reconstruit: ${entry.sha256}
+` +
+				`  Montez le numero de version plutot que de remplacer un contenu publie.`
+		);
+		process.exit(1);
+	}
+
+	slot.versions[entry.version] = {
+		...manifest(entry.pack, entry.version),
+		url: entry.url,
+		zipSHA256: entry.sha256,
 	};
 }
 
+// Les paquets retires de la publication gardent leurs versions passees : on
+// cesse d'en publier de nouvelles, on ne casse pas les projets existants.
+const kept = Object.keys(listing.packages).length;
+console.log(
+	`build-vpm: listing — ${kept} paquet(s), ` +
+		`${Object.values(listing.packages).reduce((t, p) => t + Object.keys(p.versions).length, 0)} version(s)`
+);
+
 writeFileSync(
-	join(siteRoot, 'public/index.json'),
+	listingPath,
 	JSON.stringify(listing, null, 2) + '\n',
 	'utf8'
 );

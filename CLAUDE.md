@@ -68,6 +68,51 @@ la balise vers une image inexistante. La page se charge normalement, rien n'éch
 build, et le défaut ne se voit qu'au premier partage Discord. C'est arrivé le 20/08/2026
 avec FOS Sync Doctor.
 
+## 4bis. Publier une mise a jour d'un pack au listing VPM
+
+L'ordre compte, et deux etapes sont irreversibles.
+
+```sh
+# 1. Depot Unity : version montee et validee (AssemblyInfo/FOSVersion,
+#    CHANGELOG, README), commit fait.
+# 2. Ici : reporter la version dans src/data/packs.json
+npm run sync     # doc, changelogs, cartes sociales
+npm run vpm      # zips + index.json, avec verification des versions
+# 3. Publier la release AVANT de pousser le site
+gh release create <id>-v<version> "dist-vpm/<vpmName>-<version>.zip"
+npm run build
+git commit && git push
+```
+
+**La release doit exister avant que le listing ne soit en ligne.** Sinon `index.json`
+pointe vers un zip absent, et toute installation tentee pendant ce laps de temps echoue.
+
+### Ce qui est irreversible
+
+⚠ **Ne jamais republier un numero de version avec un contenu different.** Le Creator
+Companion verifie le `zipSHA256` : deux contenus sous un meme numero, c'est une
+installation refusee chez celui qui a l'ancien en cache. `build-vpm.mjs` compare le zip
+reconstruit a celui deja annonce dans `index.json` et refuse de continuer. Montez le
+numero, c'est tout.
+
+⚠ **Ne jamais retirer une version du listing, ni supprimer sa release GitHub.** Un projet
+dont le `vpm-manifest.json` verrouille cette version ne peut plus la resoudre : le VCC la
+declare introuvable. Le listing **s'accumule**, il ne se remplace pas — le script conserve
+donc les versions deja presentes dans `public/index.json`. Cesser de publier un pack se
+fait en passant `vpmPublished` a `false`, ce qui arrete les nouvelles versions sans
+retirer les anciennes.
+
+### Pieges rencontres le 20/08/2026
+
+- **Construction reproductible.** `adm-zip` inscrit la date de modification de chaque
+  fichier : sans horodatage fige ni tri du parcours, reconstruire un contenu identique
+  produisait une empreinte differente et invalidait le `zipSHA256` publie. C'est regle
+  dans le script, ne pas le defaire.
+- **Cache de GitHub.** Apres remplacement d'un asset de release, l'URL de telechargement a
+  servi l'ancien fichier pendant une vingtaine de minutes, y compris apres suppression et
+  recreation de la release. Raison de plus pour ne jamais remplacer un contenu publie.
+- **`dist-vpm/` est vide a chaque construction.** N'y rangez rien que vous vouliez garder.
+
 ## 4. Localisation
 
 L'anglais occupe la racine du site, les autres langues vivent sous `/fr`, `/es`,
