@@ -56,6 +56,18 @@ Ordre à respecter quand un pack change :
 4. `npm run build` pour vérifier ;
 5. commit.
 
+### Ajouter un pack au catalogue
+
+`npm run sync` enchaîne desormais `scripts/gen-og.mjs` : ajouter une entrée dans
+`packs.json` puis lancer la synchro suffit à produire sa carte sociale en même temps que
+sa documentation.
+
+⚠ Ne jamais ajouter un pack sans relancer la synchro. `Head.astro` déclare
+`og:image` pour **tous** les packs de `packs.json` : une entrée sans carte fait pointer
+la balise vers une image inexistante. La page se charge normalement, rien n'échoue au
+build, et le défaut ne se voit qu'au premier partage Discord. C'est arrivé le 20/08/2026
+avec FOS Sync Doctor.
+
 ## 4. Localisation
 
 L'anglais occupe la racine du site, les autres langues vivent sous `/fr`, `/es`,

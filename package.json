@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "sync": "node scripts/sync-packs.mjs",
+    "sync": "node scripts/sync-packs.mjs && node scripts/gen-og.mjs",
     "og": "node scripts/gen-og.mjs"
   },
   "dependencies": {
