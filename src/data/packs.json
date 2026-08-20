@@ -125,6 +125,31 @@
     }
   },
   {
+    "id": "sync-doctor",
+    "name": "FOS Sync Doctor",
+    "shortName": "Sync Doctor",
+    "version": "1.0.0",
+    "edition": "free",
+    "price": null,
+    "minimumCore": "1.1.0",
+    "requires": [],
+    "sourcePath": "Assets/FOS/SyncDoctor",
+    "docsSlug": "packs/sync-doctor",
+    "order": 5,
+    "description": {
+      "en": "Audits the synchronised behaviours of a world for the mistakes that never raise an error: late joiners, ownership, and broadcast events acting on the local player.",
+      "fr": "Audite les comportements synchronisés d'un monde à la recherche des erreurs qui ne produisent jamais de message : late joiners, ownership, événements diffusés agissant sur le joueur local.",
+      "es": "Audita los comportamientos sincronizados de un mundo en busca de los errores que nunca producen un mensaje: late joiners, propiedad de red y eventos difundidos que actúan sobre el jugador local.",
+      "de": "Prüft die synchronisierten Behaviours einer Welt auf Fehler, die nie eine Meldung erzeugen: Late Joiner, Ownership und gesendete Ereignisse, die auf den lokalen Spieler wirken."
+    },
+    "tagline": {
+      "en": "Find the VRChat sync bugs that never raise an error",
+      "fr": "Trouver les bugs de synchro VRChat qui ne disent rien",
+      "es": "Encuentra los errores de sincronización de VRChat que no avisan",
+      "de": "Findet die VRChat-Sync-Fehler, die sich nie melden"
+    }
+  },
+  {
     "id": "tablet-system",
     "name": "FOS Tablet System — Standard",
     "shortName": "Tablet System",
@@ -138,7 +163,7 @@
     ],
     "sourcePath": "Assets/FOS/TabletSystem/Standard",
     "docsSlug": "packs/tablet-system",
-    "order": 5,
+    "order": 6,
     "description": {
       "en": "A tablet players summon in front of them: teleport menu, local toggles, world rules, and a full moderation panel with roles, freeze, isolation, mute and a synchronised log.",
       "fr": "Une tablette que le joueur fait apparaître devant lui : menu de téléportation, interrupteurs locaux, règlement du monde, et un panneau de modération complet avec rôles, immobilisation, isolement, coupure micro et journal synchronisé.",
@@ -165,7 +190,7 @@
     ],
     "sourcePath": "Assets/FOS/TabletSystem/Pro",
     "docsSlug": "packs/tablet-system-pro",
-    "order": 6,
+    "order": 7,
     "description": {
       "en": "Turns the four fixed roles into as many as your world needs, each with its own permissions, plus per-account roles, per-role visibility and per-role spawn points.",
       "fr": "Transforme les quatre rôles figés en autant que votre monde en demande, chacun avec ses propres permissions, plus les rôles par compte, la visibilité par rôle et les points d'apparition par rôle.",

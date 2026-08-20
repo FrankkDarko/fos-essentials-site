@@ -12,6 +12,7 @@ Unity 2022.3.22f1 - VRChat SDK Worlds 3.10.4 - Built-in render pipeline.
 - [FOS UI Culling](https://essentials.frenchoasis.studio/packs/ui-culling/): Disables world UIs when the local player is out of range, from a single central manager. Version 1.0.0, free.
 - [FOS Mirror](https://essentials.frenchoasis.studio/packs/mirror/): Switches mirrors on and off by distance, by button or by interaction, from a single central manager, with quality presets and a cost estimate. Version 1.0.0, free.
 - [FOS Localization](https://essentials.frenchoasis.studio/packs/localization/): Translates the text and images of a world into as many languages as you want, with a table editor, CSV import and export, and the player's choice remembered between visits. Version 1.0.0, free.
+- [FOS Sync Doctor](https://essentials.frenchoasis.studio/packs/sync-doctor/): Audits the synchronised behaviours of a world for the mistakes that never raise an error: late joiners, ownership, and broadcast events acting on the local player. Version 1.0.0, free.
 - [FOS Tablet System — Standard](https://essentials.frenchoasis.studio/packs/tablet-system/): A tablet players summon in front of them: teleport menu, local toggles, world rules, and a full moderation panel with roles, freeze, isolation, mute and a synchronised log. Version 2.1.0, paid.
 - [FOS Tablet System — Pro](https://essentials.frenchoasis.studio/packs/tablet-system-pro/): Turns the four fixed roles into as many as your world needs, each with its own permissions, plus per-account roles, per-role visibility and per-role spawn points. Version 1.0.0, paid.
 
@@ -23,6 +24,7 @@ Unity 2022.3.22f1 - VRChat SDK Worlds 3.10.4 - Built-in render pipeline.
 - [FAQ](https://essentials.frenchoasis.studio/faq/): Quest, requirements, dependencies, updating.
 - [Making a VRChat world multilingual](https://essentials.frenchoasis.studio/guides/multilingual-vrchat-world/): How to translate the text and images of a VRChat world, why parallel arrays break, and how to remember a visitor's language between visits.
 - [Mirrors and frame rate in VRChat worlds](https://essentials.frenchoasis.studio/guides/vrchat-mirror-performance/): Why mirrors cost so much in a VRChat world, what a mirror actually renders, and how to keep them without wrecking performance on PC and Quest.
+- [Udon sync mistakes that never raise an error](https://essentials.frenchoasis.studio/guides/vrchat-udon-sync-mistakes/): The VRChat networking bugs that compile cleanly and look right on your own machine: late joiners, ownership, and events that act on the wrong player.
 - [Moderating a VRChat world](https://essentials.frenchoasis.studio/guides/vrchat-world-moderation/): What a world creator can and cannot do about disruptive visitors in VRChat, and how in-world moderation tools with roles actually work.
 - [World UI and draw calls in VRChat](https://essentials.frenchoasis.studio/guides/vrchat-world-ui-performance/): Why world-space canvases cost frames even when nobody looks at them, and how distance culling keeps a UI-heavy VRChat world fast.
 
