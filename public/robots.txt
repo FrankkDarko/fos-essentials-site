@@ -1,0 +1,9 @@
+# FOS Essentials — https://essentials.frenchoasis.studio
+#
+# Tout est ouvert, crawlers d'IA compris : le but est d'être cité, pas protégé.
+# Le site ne contient que de la documentation publique et des pages produit.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://essentials.frenchoasis.studio/sitemap-index.xml

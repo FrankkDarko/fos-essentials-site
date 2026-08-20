@@ -23,6 +23,9 @@ export default defineConfig({
 			logo: { src: './src/assets/logo.png', alt: 'FOS Essentials' },
 			favicon: '/favicon.png',
 			customCss: ['./src/styles/custom.css'],
+			// Ajoute cartes sociales et JSON-LD a toutes les pages d'un coup,
+			// pages generees comprises.
+			components: { Head: './src/components/Head.astro' },
 			social: [
 				{
 					icon: 'discord',

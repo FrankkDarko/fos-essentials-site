@@ -1,0 +1,146 @@
+---
+/**
+ * Surcharge du `<head>` de Starlight.
+ *
+ * Starlight pose déjà canonical, hreflang, sitemap et Open Graph de base. Ce
+ * composant y ajoute ce qu'il ne peut pas deviner :
+ *
+ * - **une carte sociale par page** : Starlight annonce `summary_large_image`
+ *   sans fournir d'image, ce qui donne une carte vide sur Discord ou X ;
+ * - **du JSON-LD** qui décrit l'éditeur, le site et chaque pack comme un vrai
+ *   logiciel — versions, prérequis, gratuit ou payant. C'est ce qui permet à un
+ *   moteur, classique ou génératif, de rattacher ces pages à une entité connue
+ *   plutôt qu'à du texte isolé.
+ *
+ * Le faire ici plutôt que page par page évite d'annoter les pages générées par
+ * `sync-packs.mjs`, qui sont réécrites à chaque synchronisation.
+ */
+import packs from '../data/packs.json';
+import site from '../data/site.json';
+
+const SITE = Astro.site ?? new URL('https://essentials.frenchoasis.studio');
+const abs = (path) => new URL(path, SITE).href;
+
+// L'anglais occupe la racine : un premier segment inconnu des autres langues
+// signifie donc « anglais ».
+const PREFIXED = ['fr', 'es', 'de'];
+const segments = Astro.url.pathname.split('/').filter(Boolean);
+const lang = PREFIXED.includes(segments[0]) ? segments.shift() : 'en';
+const [section, slug] = segments;
+
+const byId = new Map(packs.map((p) => [p.id, p]));
+const pack =
+	section === 'packs' || section === 'changelogs' ? byId.get(slug) : undefined;
+
+const ogImage = abs(pack ? `/og/${pack.id}.png` : '/og/default.png');
+const home = lang === 'en' ? '/' : `/${lang}/`;
+
+const organization = {
+	'@type': 'Organization',
+	'@id': abs('/#studio'),
+	name: site.studio,
+	url: site.website,
+	logo: abs('/favicon.png'),
+	sameAs: [site.discord, ...site.shops.map((s) => s.url)],
+};
+
+/** @type {object[]} */
+const graph = [
+	organization,
+	{
+		'@type': 'WebSite',
+		'@id': abs('/#website'),
+		name: 'FOS Essentials',
+		url: SITE.href,
+		publisher: { '@id': abs('/#studio') },
+		inLanguage: ['en', 'fr', 'es', 'de'],
+	},
+];
+
+if (pack) {
+	const dependencies = pack.requires
+		.map((id) => byId.get(id))
+		.filter(Boolean)
+		.map((dep) => `${dep.name} ${dep.version}`);
+
+	graph.push({
+		'@type': 'SoftwareApplication',
+		'@id': abs(`/${pack.docsSlug}/#software`),
+		name: pack.name,
+		description: pack.description[lang] ?? pack.description.en,
+		url: abs(`/${pack.docsSlug}/`),
+		image: ogImage,
+		applicationCategory: 'DeveloperApplication',
+		applicationSubCategory: 'VRChat world tool',
+		operatingSystem: 'Windows, Android (Meta Quest)',
+		softwareVersion: pack.version,
+		softwareRequirements: [
+			`Unity ${site.unity}`,
+			`VRChat SDK Worlds ${site.vrchatSdk}`,
+			pack.minimumCore ? `FOS Essentials Core ${pack.minimumCore}` : null,
+			...dependencies,
+		]
+			.filter(Boolean)
+			.join(', '),
+		publisher: { '@id': abs('/#studio') },
+		isAccessibleForFree: pack.edition === 'free',
+		offers:
+			pack.edition === 'free'
+				? {
+						'@type': 'Offer',
+						price: 0,
+						priceCurrency: 'EUR',
+						availability: 'https://schema.org/InStock',
+						url: abs(`/${pack.docsSlug}/`),
+					}
+				: {
+						'@type': 'Offer',
+						availability: 'https://schema.org/InStock',
+						url: site.shops.find((s) => s.primary)?.url ?? site.website,
+					},
+	});
+
+	graph.push({
+		'@type': 'BreadcrumbList',
+		itemListElement: [
+			{ '@type': 'ListItem', position: 1, name: 'FOS Essentials', item: abs(home) },
+			{
+				'@type': 'ListItem',
+				position: 2,
+				name: 'Packs',
+				item: abs(lang === 'en' ? '/catalog/' : `/${lang}/catalog/`),
+			},
+			{ '@type': 'ListItem', position: 3, name: pack.name },
+		],
+	});
+}
+
+// Starlight titre les pages de pack du seul nom du produit (« FOS Mirror »),
+// qui ne dit pas ce que fait l'outil. On y accole sa promesse, dans la langue
+// de la page. Le H1 de la page, lui, reste le nom seul.
+const seoTitle = pack
+	? `${pack.name}: ${pack.tagline?.[lang] ?? pack.tagline?.en ?? ''}`.trim()
+	: undefined;
+
+const head =
+	seoTitle && section === 'packs'
+		? Astro.locals.starlightRoute.head.map((tag) =>
+				tag.tag === 'title' ? { ...tag, content: seoTitle } : tag
+			)
+		: Astro.locals.starlightRoute.head;
+
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph })
+	// Empêche une fermeture prématurée de la balise script.
+	.replace(/</g, '\u003c');
+---
+
+{head.map(({ tag: Tag, attrs, content }) => <Tag {...attrs} set:html={content} />)}
+
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={pack ? pack.name : 'FOS Essentials'} />
+<meta name="twitter:image" content={ogImage} />
+<meta name="theme-color" content="#299e8f" />
+
+<script type="application/ld+json" set:html={jsonLd} is:inline />

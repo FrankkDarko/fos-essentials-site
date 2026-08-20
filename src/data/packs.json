@@ -16,6 +16,12 @@
       "fr": "Le socle commun de tous les outils FOS Essentials : classe de base, logs, ownership, registre de joueurs, inspecteurs traduits et le Hub.",
       "es": "La base común de todas las herramientas FOS Essentials: clase base, registros, propiedad de red, registro de jugadores, inspectores traducidos y el Hub.",
       "de": "Die gemeinsame Grundlage aller FOS-Essentials-Werkzeuge: Basisklasse, Logging, Ownership, Spielerregister, übersetzte Inspektoren und das Hub."
+    },
+    "tagline": {
+      "en": "Shared foundation for every VRChat world tool",
+      "fr": "Socle commun de tous les outils pour mondes VRChat",
+      "es": "Base común de todas las herramientas para mundos de VRChat",
+      "de": "Gemeinsame Grundlage aller Werkzeuge für VRChat-Welten"
     }
   },
   {
@@ -35,6 +41,12 @@
       "fr": "Téléportation à sens unique, déclenchée par interaction, par un volume de trigger ou par un bouton d'interface.",
       "es": "Teletransporte de sentido único, activado por interacción, por un volumen de trigger o por un botón de interfaz.",
       "de": "Einseitiger Teleport, ausgelöst durch Interaktion, durch ein Trigger-Volumen oder durch eine UI-Schaltfläche."
+    },
+    "tagline": {
+      "en": "One-way teleport for VRChat worlds",
+      "fr": "Téléportation à sens unique pour mondes VRChat",
+      "es": "Teletransporte de sentido único para mundos de VRChat",
+      "de": "Einseitiger Teleport für VRChat-Welten"
     }
   },
   {
@@ -54,6 +66,12 @@
       "fr": "Désactive les UI du monde quand le joueur local est hors de portée, depuis un unique manager central.",
       "es": "Desactiva las UI del mundo cuando el jugador local está fuera de alcance, desde un único gestor central.",
       "de": "Deaktiviert Welt-UIs, wenn der lokale Spieler außer Reichweite ist, gesteuert von einem einzigen zentralen Manager."
+    },
+    "tagline": {
+      "en": "Disable world UI by distance in VRChat",
+      "fr": "Désactiver les UI par la distance dans VRChat",
+      "es": "Desactivar las UI por distancia en VRChat",
+      "de": "Welt-UI nach Entfernung abschalten in VRChat"
     }
   },
   {
@@ -73,6 +91,12 @@
       "fr": "Allume et éteint les miroirs par distance, par bouton ou par interaction, depuis un unique manager central, avec presets de qualité et estimation du coût.",
       "es": "Enciende y apaga los espejos por distancia, por botón o por interacción, desde un único gestor central, con ajustes predefinidos de calidad y una estimación de coste.",
       "de": "Schaltet Spiegel nach Entfernung, per Schaltfläche oder per Interaktion ein und aus, gesteuert von einem einzigen zentralen Manager, mit Qualitäts-Voreinstellungen und einer Kostenschätzung."
+    },
+    "tagline": {
+      "en": "Mirror manager for VRChat worlds",
+      "fr": "Gestion des miroirs pour mondes VRChat",
+      "es": "Gestión de espejos para mundos de VRChat",
+      "de": "Spiegelverwaltung für VRChat-Welten"
     }
   },
   {
@@ -92,6 +116,12 @@
       "fr": "Traduit les textes et les images d'un monde dans autant de langues que voulu, avec un éditeur de table, un import-export CSV et la mémorisation du choix du joueur d'une visite à l'autre.",
       "es": "Traduce los textos y las imágenes de un mundo a tantos idiomas como quieras, con un editor de tabla, importación y exportación CSV, y el idioma elegido por el jugador recordado entre visitas.",
       "de": "Übersetzt Texte und Bilder einer Welt in beliebig viele Sprachen — mit Tabelleneditor, CSV-Import und -Export und gemerkter Sprachwahl über Besuche hinweg."
+    },
+    "tagline": {
+      "en": "Translate a VRChat world into any language",
+      "fr": "Traduire un monde VRChat dans toutes les langues",
+      "es": "Traducir un mundo de VRChat a cualquier idioma",
+      "de": "Eine VRChat-Welt in jede Sprache übersetzen"
     }
   },
   {
@@ -114,6 +144,12 @@
       "fr": "Une tablette que le joueur fait apparaître devant lui : menu de téléportation, interrupteurs locaux, règlement du monde, et un panneau de modération complet avec rôles, immobilisation, isolement, coupure micro et journal synchronisé.",
       "es": "Una tableta que el jugador hace aparecer delante de él: menú de teletransporte, interruptores locales, normas del mundo y un panel de moderación completo con roles, inmovilización, aislamiento, silencio y registro sincronizado.",
       "de": "Ein Tablet, das sich Spieler vor sich holen: Teleport-Menü, lokale Schalter, Weltregeln und ein vollständiges Moderationspanel mit Rollen, Bewegungssperre, Isolation, Stummschaltung und synchronisiertem Protokoll."
+    },
+    "tagline": {
+      "en": "Moderation tablet for VRChat worlds",
+      "fr": "Tablette de modération pour mondes VRChat",
+      "es": "Tableta de moderación para mundos de VRChat",
+      "de": "Moderations-Tablet für VRChat-Welten"
     }
   },
   {
@@ -135,6 +171,12 @@
       "fr": "Transforme les quatre rôles figés en autant que votre monde en demande, chacun avec ses propres permissions, plus les rôles par compte, la visibilité par rôle et les points d'apparition par rôle.",
       "es": "Convierte los cuatro roles fijos en tantos como necesite tu mundo, cada uno con sus permisos, además de roles por cuenta, visibilidad por rol y puntos de aparición por rol.",
       "de": "Macht aus den vier festen Rollen so viele, wie deine Welt braucht — jede mit eigenen Rechten, dazu Rollen je Konto, Sichtbarkeit je Rolle und Spawnpunkte je Rolle."
+    },
+    "tagline": {
+      "en": "Custom roles and permissions for VRChat moderation",
+      "fr": "Rôles et permissions sur mesure pour la modération VRChat",
+      "es": "Roles y permisos a medida para la moderación en VRChat",
+      "de": "Eigene Rollen und Rechte für die VRChat-Moderation"
     }
   }
 ]

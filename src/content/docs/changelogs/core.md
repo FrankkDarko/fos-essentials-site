@@ -34,13 +34,26 @@ Nothing yet.
 - An entry with no URL is ignored, so a store can be prepared before its page exists.
   With one usable store the button opens it directly; from two it becomes a dropdown —
   a menu holding a single entry would only be an extra click.
+- **A pack can declare what it needs from other packs**, through `MinimumVersions` on the
+  `FOSTool` attribute: `MinimumVersions = "FOS Tablet System=2.0.0"`. Until now a pack
+  could only state a minimum Core version, so a dependency between two packs existed only
+  in an assembly reference — invisible to the buyer, and unverifiable by the Hub.
+- The Hub reports every unmet requirement on a tool, telling a **missing** pack apart from
+  one that is merely **too old**, and naming the version actually installed.
 
 ### Changed
 
 - The former single shop URL is moved into the store list the first time the editor
   loads, and the old field is then cleared. Nothing to redo by hand.
-- The Hub's link diagnostic checks that at least one store is usable, instead of checking
-  one fixed field.
+- Hub layout: **Links** now sits directly under **Environment**, before the prefabs and
+  the tool list.
+
+### Removed
+
+- The **branding settings** and **Discord and Shop links** rows of the environment
+  section, and the **Open branding settings** button. They told the author of a pack
+  about their own configuration and taught a buyer nothing. The branding asset is still
+  reachable in the project, and the Core recreates it if it goes missing.
 
 ---
 
