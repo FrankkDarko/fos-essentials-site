@@ -1,0 +1,69 @@
+---
+/**
+ * Ajoute un menu déroulant des boutiques à côté des icônes sociales.
+ *
+ * Reprend la logique du Hub, dans l'éditeur Unity : les packs sont vendus sur
+ * plusieurs enseignes et les acheteurs ont leurs habitudes. Un lien unique vers
+ * une seule boutique en renverrait une partie vers un endroit où ils n'ont ni
+ * compte, ni moyen de paiement, ni historique d'achat.
+ *
+ * La liste vient de `site.json`, qui recopie celle de `FOSBrandingSettings` :
+ * le site et le Hub doivent proposer les mêmes enseignes.
+ */
+import Default from '@astrojs/starlight/components/SocialIcons.astro';
+import site from '../data/site.json';
+import { langFromPath, UI } from '../i18n';
+
+const lang = langFromPath(Astro.url.pathname);
+const t = UI[lang];
+---
+
+<Default />
+
+<details class="fos-shop">
+	<summary class="fos-shop__toggle" aria-label={t.shopChoose}>
+		<svg
+			aria-hidden="true"
+			width="16"
+			height="16"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+		>
+			<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+			<path d="M3 6h18"></path>
+			<path d="M16 10a4 4 0 0 1-8 0"></path>
+		</svg>
+		<span class="fos-shop__label">{t.shop}</span>
+	</summary>
+	<div class="fos-shop__menu">
+		<p class="fos-shop__hint">{t.shopChoose}</p>
+		{
+			site.shops.map((shop) => (
+				<a class="fos-shop__link" href={shop.url}>
+					{shop.label}
+				</a>
+			))
+		}
+	</div>
+</details>
+
+<script is:inline>
+	// Un <details> ne se referme pas tout seul : sans ça, le menu resterait
+	// ouvert derrière le contenu dès qu'on clique ailleurs.
+	document.addEventListener('click', (event) => {
+		document.querySelectorAll('details.fos-shop[open]').forEach((menu) => {
+			if (!menu.contains(event.target)) menu.open = false;
+		});
+	});
+	document.addEventListener('keydown', (event) => {
+		if (event.key !== 'Escape') return;
+		document.querySelectorAll('details.fos-shop[open]').forEach((menu) => {
+			menu.open = false;
+			menu.querySelector('summary')?.focus();
+		});
+	});
+</script>

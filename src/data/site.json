@@ -11,7 +11,17 @@
       "url": "https://shop.frenchoasis.studio/en-eur/collections/vrchat-assets",
       "primary": true
     },
-    { "label": "Jinxxy", "url": "https://fr.jinxxy.com/FrankkDarko/products" },
-    { "label": "Booth", "url": "https://fo-studio.booth.pm" }
+    {
+      "label": "Jinxxy",
+      "url": "https://fr.jinxxy.com/FrankkDarko/products"
+    },
+    {
+      "label": "Booth",
+      "url": "https://fo-studio.booth.pm"
+    },
+    {
+      "label": "Gumroad",
+      "url": "https://frenchoasisstudio.gumroad.com"
+    }
   ]
 }

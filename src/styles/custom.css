@@ -159,3 +159,131 @@
 	color: var(--sl-color-gray-2);
 	line-height: 1.65;
 }
+
+/* --- Menu des boutiques, dans l'en-tête ----------------------------- */
+
+.fos-shop {
+	position: relative;
+}
+
+.fos-shop__toggle {
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0.3rem 0.6rem;
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 0.35rem;
+	color: var(--sl-color-text-accent);
+	font-size: var(--sl-text-sm);
+	white-space: nowrap;
+	cursor: pointer;
+	list-style: none;
+}
+
+.fos-shop__toggle::-webkit-details-marker {
+	display: none;
+}
+
+.fos-shop__toggle:hover {
+	border-color: var(--fos-accent);
+	color: var(--sl-color-white);
+}
+
+.fos-shop[open] .fos-shop__toggle {
+	border-color: var(--fos-accent);
+}
+
+.fos-shop__menu {
+	position: absolute;
+	z-index: 30;
+	top: calc(100% + 0.4rem);
+	right: 0;
+	min-width: 12rem;
+	padding: 0.4rem;
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 0.45rem;
+	background: var(--sl-color-black);
+	box-shadow: 0 8px 24px rgb(0 0 0 / 45%);
+}
+
+.fos-shop__hint {
+	margin: 0.2rem 0.5rem 0.45rem;
+	color: var(--sl-color-gray-3);
+	font-size: var(--sl-text-xs);
+}
+
+.fos-shop__link {
+	display: block;
+	padding: 0.4rem 0.5rem;
+	border-radius: 0.3rem;
+	color: var(--sl-color-white);
+	font-size: var(--sl-text-sm);
+	text-decoration: none;
+}
+
+.fos-shop__link:hover {
+	background: var(--sl-color-gray-6);
+	color: var(--sl-color-white);
+}
+
+/* Sous 50rem, Starlight resserre l'en-tête : le libellé cède la place. */
+@media (max-width: 50rem) {
+	.fos-shop__label {
+		display: none;
+	}
+}
+
+/* --- Pied de page --------------------------------------------------- */
+
+.fos-footer {
+	margin-top: 2.5rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--sl-color-gray-5);
+	font-size: var(--sl-text-sm);
+}
+
+.fos-footer__studio {
+	margin: 0 0 0.9rem;
+	color: var(--sl-color-gray-2);
+}
+
+.fos-footer__studio a {
+	color: var(--sl-color-text-accent);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.fos-footer__studio a:hover {
+	text-decoration: underline;
+}
+
+.fos-footer__links {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.4rem 1rem;
+	margin-bottom: 0.7rem;
+}
+
+.fos-footer__group {
+	color: var(--sl-color-gray-3);
+	font-size: var(--sl-text-xs);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.fos-footer__links a {
+	color: var(--sl-color-gray-2);
+	text-decoration: none;
+}
+
+.fos-footer__links a:hover {
+	color: var(--sl-color-white);
+	text-decoration: underline;
+}
+
+.fos-footer__legal {
+	margin: 1.1rem 0 0;
+	color: var(--sl-color-gray-3);
+	font-size: var(--sl-text-xs);
+}

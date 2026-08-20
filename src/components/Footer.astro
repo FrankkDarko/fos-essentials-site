@@ -1,0 +1,41 @@
+---
+/**
+ * Pied de page : on conserve celui de Starlight (pagination, lien d'édition,
+ * date de mise à jour) et on ajoute la signature du studio et ses liens.
+ *
+ * Les boutiques y figurent toutes, comme dans le menu de l'en-tête : un
+ * visiteur arrivé en bas de page ne devrait pas avoir à remonter pour trouver
+ * son enseigne.
+ */
+import Default from '@astrojs/starlight/components/Footer.astro';
+import site from '../data/site.json';
+import { langFromPath, UI } from '../i18n';
+
+const lang = langFromPath(Astro.url.pathname);
+const t = UI[lang];
+const year = 2026;
+---
+
+<Default />
+
+<div class="fos-footer not-content">
+	<p class="fos-footer__studio">
+		{t.madeBy}{' '}
+		<a href={site.website}>{site.studio}</a>
+	</p>
+
+	<nav class="fos-footer__links" aria-label={t.shopChoose}>
+		<span class="fos-footer__group">{t.shop}</span>
+		{site.shops.map((shop) => <a href={shop.url}>{shop.label}</a>)}
+	</nav>
+
+	<nav class="fos-footer__links">
+		<a href={site.discord}>{t.joinDiscord}</a>
+		<a href={site.website}>{t.studioSite}</a>
+		<a href={site.repository}>GitHub</a>
+	</nav>
+
+	<p class="fos-footer__legal">
+		© {year} {site.studio} · Unity {site.unity} · VRChat SDK {site.vrchatSdk}
+	</p>
+</div>

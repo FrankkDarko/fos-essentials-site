@@ -27,6 +27,11 @@ type Dict = Record<string, string>;
 
 export const UI: Record<Lang, Dict> = {
 	en: {
+		shop: 'Shop',
+		shopChoose: 'Choose your store',
+		madeBy: 'Made by',
+		joinDiscord: 'Discord',
+		studioSite: 'Studio website',
 		free: 'Free',
 		paid: 'Paid',
 		freePacks: 'Free packs',
@@ -45,6 +50,11 @@ export const UI: Record<Lang, Dict> = {
 		none: 'None',
 	},
 	fr: {
+		shop: 'Boutique',
+		shopChoose: 'Choisissez votre boutique',
+		madeBy: 'Réalisé par',
+		joinDiscord: 'Discord',
+		studioSite: 'Site du studio',
 		free: 'Gratuit',
 		paid: 'Payant',
 		freePacks: 'Packs gratuits',
@@ -63,6 +73,11 @@ export const UI: Record<Lang, Dict> = {
 		none: 'Aucune',
 	},
 	es: {
+		shop: 'Tienda',
+		shopChoose: 'Elige tu tienda',
+		madeBy: 'Creado por',
+		joinDiscord: 'Discord',
+		studioSite: 'Web del estudio',
 		free: 'Gratis',
 		paid: 'De pago',
 		freePacks: 'Packs gratuitos',
@@ -81,6 +96,11 @@ export const UI: Record<Lang, Dict> = {
 		none: 'Ninguna',
 	},
 	de: {
+		shop: 'Shop',
+		shopChoose: 'Wähle deinen Shop',
+		madeBy: 'Erstellt von',
+		joinDiscord: 'Discord',
+		studioSite: 'Studio-Website',
 		free: 'Kostenlos',
 		paid: 'Kostenpflichtig',
 		freePacks: 'Kostenlose Packs',

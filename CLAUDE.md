@@ -27,6 +27,11 @@ Dépôt **public**. Le dépôt Unity `fos-essentials` reste **privé** et fait f
   `src/content/docs/changelogs/*` : ces fichiers sont générés par
   `scripts/sync-packs.mjs` depuis les `README.md` / `CHANGELOG.md` du dépôt
   Unity. Une correction se fait **à la source**, puis on resynchronise.
+- **La liste des boutiques de `src/data/site.json` recopie celle de
+  `FOSBrandingSettings.asset`** (dépôt Unity, `Assets/FOS/Core/Editor/Branding/`). Le Hub
+  et le site doivent proposer les mêmes enseignes : un acheteur qui voit quatre boutiques
+  dans l'éditeur et trois sur le site se demande laquelle ment. Vérifier les deux quand
+  une enseigne est ajoutée ou qu'une URL change.
 - **`src/data/packs.json` est la source de vérité unique** du catalogue :
   version, édition gratuite/payante, dépendances, Core minimum. Aucune de ces
   valeurs ne doit être réécrite en dur dans une page ou un composant.

@@ -25,17 +25,17 @@ export default defineConfig({
 			customCss: ['./src/styles/custom.css'],
 			// Ajoute cartes sociales et JSON-LD a toutes les pages d'un coup,
 			// pages generees comprises.
-			components: { Head: './src/components/Head.astro' },
+			components: {
+				Head: './src/components/Head.astro',
+				// Menu des boutiques dans l'en-tete, signature du studio en pied.
+				SocialIcons: './src/components/SocialIcons.astro',
+				Footer: './src/components/Footer.astro',
+			},
 			social: [
 				{
 					icon: 'discord',
 					label: 'Discord',
 					href: 'https://discord.gg/t33r3Wfj3n',
-				},
-				{
-					icon: 'external',
-					label: 'Shop',
-					href: 'https://shop.frenchoasis.studio/en-eur/collections/vrchat-assets',
 				},
 			],
 			editLink: {
