@@ -1,0 +1,17 @@
+{
+  "studio": "French Oasis Studio",
+  "website": "https://frenchoasis.studio",
+  "discord": "https://discord.gg/t33r3Wfj3n",
+  "repository": "https://github.com/FrankkDarko/fos-essentials-site",
+  "unity": "2022.3.22f1",
+  "vrchatSdk": "3.10.4",
+  "shops": [
+    {
+      "label": "FOS Shop",
+      "url": "https://shop.frenchoasis.studio/en-eur/collections/vrchat-assets",
+      "primary": true
+    },
+    { "label": "Jinxxy", "url": "https://fr.jinxxy.com/FrankkDarko/products" },
+    { "label": "Booth", "url": "https://fo-studio.booth.pm" }
+  ]
+}

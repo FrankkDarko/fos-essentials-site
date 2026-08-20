@@ -1,0 +1,135 @@
+/* Teinte d'accent reprise de FOSBrandingSettings.accentColor (0.16, 0.62, 0.56). */
+:root {
+	--sl-color-accent-low: #0d2b28;
+	--sl-color-accent: #1c6b60;
+	--sl-color-accent-high: #8fd4c9;
+	--fos-accent: #299e8f;
+	--fos-paid: #d9a441;
+}
+
+:root[data-theme='light'] {
+	--sl-color-accent-low: #c7ebe4;
+	--sl-color-accent: #1c7a6d;
+	--sl-color-accent-high: #0c3a34;
+}
+
+/* --- Catalogue ------------------------------------------------------ */
+
+.fos-catalog {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+	margin-top: 1.5rem;
+}
+
+.fos-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+	padding: 1.1rem;
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 0.6rem;
+	background: var(--sl-color-black);
+}
+
+.fos-card:hover {
+	border-color: var(--fos-accent);
+}
+
+.fos-card__head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.5rem;
+}
+
+.fos-card__name {
+	font-size: var(--sl-text-lg);
+	font-weight: 600;
+	line-height: 1.25;
+}
+
+.fos-card__desc {
+	flex: 1;
+	color: var(--sl-color-gray-2);
+	font-size: var(--sl-text-sm);
+	line-height: 1.5;
+}
+
+.fos-card__meta {
+	color: var(--sl-color-gray-3);
+	font-size: var(--sl-text-xs);
+}
+
+.fos-card__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-top: 0.2rem;
+}
+
+/* --- Badges --------------------------------------------------------- */
+
+.fos-badge {
+	flex-shrink: 0;
+	padding: 0.15rem 0.5rem;
+	border-radius: 999px;
+	font-size: var(--sl-text-xs);
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.fos-badge--free {
+	background: var(--sl-color-accent-low);
+	color: var(--sl-color-accent-high);
+}
+
+.fos-badge--paid {
+	background: #3a2c0f;
+	color: var(--fos-paid);
+}
+
+:root[data-theme='light'] .fos-badge--paid {
+	background: #fbf0d6;
+	color: #7a5a12;
+}
+
+/* --- Boutons -------------------------------------------------------- */
+
+.fos-btn {
+	display: inline-block;
+	padding: 0.35rem 0.75rem;
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 0.35rem;
+	color: var(--sl-color-white);
+	font-size: var(--sl-text-sm);
+	text-decoration: none;
+}
+
+.fos-btn:hover {
+	border-color: var(--fos-accent);
+	color: var(--sl-color-white);
+}
+
+.fos-btn--primary {
+	border-color: var(--sl-color-accent);
+	background: var(--sl-color-accent);
+}
+
+/* --- Tableau de compatibilité --------------------------------------- */
+
+.fos-table {
+	width: 100%;
+	margin-top: 1.5rem;
+	border-collapse: collapse;
+	font-size: var(--sl-text-sm);
+}
+
+.fos-table th,
+.fos-table td {
+	padding: 0.5rem 0.7rem;
+	border-bottom: 1px solid var(--sl-color-gray-5);
+	text-align: left;
+}

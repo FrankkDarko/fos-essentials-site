@@ -1,0 +1,135 @@
+[
+  {
+    "id": "core",
+    "name": "FOS Essentials Core",
+    "shortName": "Core",
+    "version": "1.1.2",
+    "edition": "free",
+    "price": null,
+    "minimumCore": null,
+    "requires": [],
+    "sourcePath": "Assets/FOS/Core",
+    "docsSlug": "packs/core",
+    "order": 0,
+    "description": {
+      "en": "The shared foundation of every FOS Essentials tool: base behaviour, logging, ownership, player registry, localized inspectors and the Hub.",
+      "fr": "Le socle commun de tous les outils FOS Essentials : classe de base, logs, ownership, registre de joueurs, inspecteurs traduits et le Hub.",
+      "es": "La base común de todas las herramientas FOS Essentials: clase base, registros, propiedad de red, registro de jugadores, inspectores traducidos y el Hub.",
+      "de": "Die gemeinsame Grundlage aller FOS-Essentials-Werkzeuge: Basisklasse, Logging, Ownership, Spielerregister, übersetzte Inspektoren und das Hub."
+    }
+  },
+  {
+    "id": "teleport",
+    "name": "FOS Teleport",
+    "shortName": "Teleport",
+    "version": "1.0.0",
+    "edition": "free",
+    "price": null,
+    "minimumCore": "1.0.0",
+    "requires": [],
+    "sourcePath": "Assets/FOS/Teleport",
+    "docsSlug": "packs/teleport",
+    "order": 1,
+    "description": {
+      "en": "One-way teleport, triggered by interaction, by a trigger volume or by a UI button.",
+      "fr": "Téléportation à sens unique, déclenchée par interaction, par un volume de trigger ou par un bouton d'interface.",
+      "es": "Teletransporte de sentido único, activado por interacción, por un volumen de trigger o por un botón de interfaz.",
+      "de": "Einseitiger Teleport, ausgelöst durch Interaktion, durch ein Trigger-Volumen oder durch eine UI-Schaltfläche."
+    }
+  },
+  {
+    "id": "ui-culling",
+    "name": "FOS UI Culling",
+    "shortName": "UI Culling",
+    "version": "1.0.0",
+    "edition": "free",
+    "price": null,
+    "minimumCore": "1.0.0",
+    "requires": [],
+    "sourcePath": "Assets/FOS/UICulling",
+    "docsSlug": "packs/ui-culling",
+    "order": 2,
+    "description": {
+      "en": "Disables world UIs when the local player is out of range, from a single central manager.",
+      "fr": "Désactive les UI du monde quand le joueur local est hors de portée, depuis un unique manager central.",
+      "es": "Desactiva las UI del mundo cuando el jugador local está fuera de alcance, desde un único gestor central.",
+      "de": "Deaktiviert Welt-UIs, wenn der lokale Spieler außer Reichweite ist, gesteuert von einem einzigen zentralen Manager."
+    }
+  },
+  {
+    "id": "mirror",
+    "name": "FOS Mirror",
+    "shortName": "Mirror",
+    "version": "1.0.0",
+    "edition": "free",
+    "price": null,
+    "minimumCore": "1.0.0",
+    "requires": [],
+    "sourcePath": "Assets/FOS/Mirror",
+    "docsSlug": "packs/mirror",
+    "order": 3,
+    "description": {
+      "en": "Switches mirrors on and off by distance, by button or by interaction, from a single central manager, with quality presets and a cost estimate.",
+      "fr": "Allume et éteint les miroirs par distance, par bouton ou par interaction, depuis un unique manager central, avec presets de qualité et estimation du coût.",
+      "es": "Enciende y apaga los espejos por distancia, por botón o por interacción, desde un único gestor central, con ajustes predefinidos de calidad y una estimación de coste.",
+      "de": "Schaltet Spiegel nach Entfernung, per Schaltfläche oder per Interaktion ein und aus, gesteuert von einem einzigen zentralen Manager, mit Qualitäts-Voreinstellungen und einer Kostenschätzung."
+    }
+  },
+  {
+    "id": "localization",
+    "name": "FOS Localization",
+    "shortName": "Localization",
+    "version": "1.0.0",
+    "edition": "free",
+    "price": null,
+    "minimumCore": "1.0.0",
+    "requires": [],
+    "sourcePath": "Assets/FOS/Localization",
+    "docsSlug": "packs/localization",
+    "order": 4,
+    "description": {
+      "en": "Translates the text and images of a world into as many languages as you want, with a table editor, CSV import and export, and the player's choice remembered between visits.",
+      "fr": "Traduit les textes et les images d'un monde dans autant de langues que voulu, avec un éditeur de table, un import-export CSV et la mémorisation du choix du joueur d'une visite à l'autre.",
+      "es": "Traduce los textos y las imágenes de un mundo a tantos idiomas como quieras, con un editor de tabla, importación y exportación CSV, y el idioma elegido por el jugador recordado entre visitas.",
+      "de": "Übersetzt Texte und Bilder einer Welt in beliebig viele Sprachen — mit Tabelleneditor, CSV-Import und -Export und gemerkter Sprachwahl über Besuche hinweg."
+    }
+  },
+  {
+    "id": "tablet-system",
+    "name": "FOS Tablet System — Standard",
+    "shortName": "Tablet System",
+    "version": "1.6.0",
+    "edition": "paid",
+    "price": null,
+    "minimumCore": "1.1.0",
+    "requires": ["localization", "teleport"],
+    "sourcePath": "Assets/FOS/TabletSystem/Standard",
+    "docsSlug": "packs/tablet-system",
+    "order": 5,
+    "description": {
+      "en": "A tablet players summon in front of them: teleport menu, local toggles, world rules, and a full moderation panel with roles, freeze, isolation, mute and a synchronised log.",
+      "fr": "Une tablette que le joueur fait apparaître devant lui : menu de téléportation, interrupteurs locaux, règlement du monde, et un panneau de modération complet avec rôles, immobilisation, isolement, coupure micro et journal synchronisé.",
+      "es": "Una tableta que el jugador hace aparecer delante de él: menú de teletransporte, interruptores locales, normas del mundo y un panel de moderación completo con roles, inmovilización, aislamiento, silencio y registro sincronizado.",
+      "de": "Ein Tablet, das sich Spieler vor sich holen: Teleport-Menü, lokale Schalter, Weltregeln und ein vollständiges Moderationspanel mit Rollen, Bewegungssperre, Isolation, Stummschaltung und synchronisiertem Protokoll."
+    }
+  },
+  {
+    "id": "tablet-system-pro",
+    "name": "FOS Tablet System — Pro",
+    "shortName": "Tablet System Pro",
+    "version": "1.0.0",
+    "edition": "paid",
+    "price": null,
+    "minimumCore": "1.1.0",
+    "requires": ["tablet-system"],
+    "sourcePath": "Assets/FOS/TabletSystem/Pro",
+    "docsSlug": "packs/tablet-system-pro",
+    "order": 6,
+    "description": {
+      "en": "Turns the four fixed roles into as many as your world needs, each with its own permissions, plus per-account roles, per-role visibility and per-role spawn points.",
+      "fr": "Transforme les quatre rôles figés en autant que votre monde en demande, chacun avec ses propres permissions, plus les rôles par compte, la visibilité par rôle et les points d'apparition par rôle.",
+      "es": "Convierte los cuatro roles fijos en tantos como necesite tu mundo, cada uno con sus permisos, además de roles por cuenta, visibilidad por rol y puntos de aparición por rol.",
+      "de": "Macht aus den vier festen Rollen so viele, wie deine Welt braucht — jede mit eigenen Rechten, dazu Rollen je Konto, Sichtbarkeit je Rolle und Spawnpunkte je Rolle."
+    }
+  }
+]

@@ -1,0 +1,81 @@
+---
+/**
+ * Catalogue des packs, rendu depuis `src/data/packs.json`.
+ *
+ * Source de vérité unique : versions, édition gratuite ou payante, dépendances
+ * et Core minimum ne sont écrits qu'à un seul endroit. Toute page qui les
+ * affiche passe par ici ou par CompatibilityTable.
+ */
+import packs from '../data/packs.json';
+import site from '../data/site.json';
+import { langFromPath, localized, UI } from '../i18n';
+
+interface Props {
+	/** Restreint la liste : 'free', 'paid', ou tout par défaut. */
+	filter?: 'free' | 'paid';
+	/** Masque les titres de section quand la page en fournit déjà. */
+	headings?: boolean;
+}
+
+const { filter, headings = true } = Astro.props;
+
+const lang = langFromPath(Astro.url.pathname);
+const t = UI[lang];
+const byId = new Map(packs.map((p) => [p.id, p]));
+const shop = site.shops.find((s) => s.primary) ?? site.shops[0];
+
+const sorted = [...packs].sort((a, b) => a.order - b.order);
+const groups = (
+	filter ? [filter] : (['free', 'paid'] as const)
+).map((edition) => ({
+	edition,
+	title: edition === 'free' ? t.freePacks : t.paidPacks,
+	items: sorted.filter((p) => p.edition === edition),
+}));
+---
+
+{
+	groups.map((group) => (
+		<section>
+			{headings && group.items.length > 0 && <h2>{group.title}</h2>}
+			<div class="fos-catalog">
+				{group.items.map((pack) => {
+					const deps = pack.requires
+						.map((id) => byId.get(id)?.shortName ?? id)
+						.join(', ');
+					return (
+						<article class="fos-card">
+							<div class="fos-card__head">
+								<span class="fos-card__name">{pack.shortName}</span>
+								<span class={`fos-badge fos-badge--${pack.edition}`}>
+									{pack.edition === 'free' ? t.free : t.paid}
+								</span>
+							</div>
+							<p class="fos-card__desc">
+								{pack.description[lang] ?? pack.description.en}
+							</p>
+							<p class="fos-card__meta">
+								v{pack.version}
+								{pack.minimumCore && ` · ${t.requiresCore} ${pack.minimumCore}+`}
+								{deps && ` · ${t.requires} ${deps}`}
+							</p>
+							<div class="fos-card__actions">
+								<a
+									class="fos-btn fos-btn--primary"
+									href={localized(lang, pack.docsSlug)}
+								>
+									{t.docs}
+								</a>
+								{pack.edition === 'paid' && (
+									<a class="fos-btn" href={shop.url}>
+										{t.getIt}
+									</a>
+								)}
+							</div>
+						</article>
+					);
+				})}
+			</div>
+		</section>
+	))
+}

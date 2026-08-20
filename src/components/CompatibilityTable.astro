@@ -1,0 +1,45 @@
+---
+/**
+ * Matrice pack ↔ version du Core, rendue depuis `src/data/packs.json`.
+ *
+ * C'est la table que l'acheteur consulte avant de mettre à jour : le Hub
+ * refuse une combinaison dont le Core est trop ancien, autant qu'elle soit
+ * lisible avant l'achat.
+ */
+import packs from '../data/packs.json';
+import { langFromPath, UI } from '../i18n';
+
+const lang = langFromPath(Astro.url.pathname);
+const t = UI[lang];
+const byId = new Map(packs.map((p) => [p.id, p]));
+const sorted = [...packs].sort((a, b) => a.order - b.order);
+---
+
+<table class="fos-table">
+	<thead>
+		<tr>
+			<th>{t.pack}</th>
+			<th>{t.version}</th>
+			<th>{t.edition}</th>
+			<th>{t.minCore}</th>
+			<th>{t.dependencies}</th>
+		</tr>
+	</thead>
+	<tbody>
+		{
+			sorted.map((pack) => (
+				<tr>
+					<td>{pack.name}</td>
+					<td>{pack.version}</td>
+					<td>{pack.edition === 'free' ? t.free : t.paid}</td>
+					<td>{pack.minimumCore ?? '—'}</td>
+					<td>
+						{pack.requires.length
+							? pack.requires.map((id) => byId.get(id)?.shortName ?? id).join(', ')
+							: t.none}
+					</td>
+				</tr>
+			))
+		}
+	</tbody>
+</table>
