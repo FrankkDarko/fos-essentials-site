@@ -51,7 +51,7 @@
       "de": "Einseitiger Teleport für VRChat-Welten"
     },
     "vpmName": "studio.frenchoasis.teleport",
-    "vpmPublished": false
+    "vpmPublished": true
   },
   {
     "id": "ui-culling",
@@ -78,7 +78,7 @@
       "de": "Welt-UI nach Entfernung abschalten in VRChat"
     },
     "vpmName": "studio.frenchoasis.uiculling",
-    "vpmPublished": false
+    "vpmPublished": true
   },
   {
     "id": "mirror",
@@ -105,7 +105,7 @@
       "de": "Spiegelverwaltung für VRChat-Welten"
     },
     "vpmName": "studio.frenchoasis.mirror",
-    "vpmPublished": false
+    "vpmPublished": true
   },
   {
     "id": "localization",
@@ -132,7 +132,7 @@
       "de": "Eine VRChat-Welt in jede Sprache übersetzen"
     },
     "vpmName": "studio.frenchoasis.localization",
-    "vpmPublished": false
+    "vpmPublished": true
   },
   {
     "id": "sync-doctor",
@@ -159,7 +159,7 @@
       "de": "Findet die VRChat-Sync-Fehler, die sich nie melden"
     },
     "vpmName": "studio.frenchoasis.syncdoctor",
-    "vpmPublished": false
+    "vpmPublished": true
   },
   {
     "id": "tablet-system",

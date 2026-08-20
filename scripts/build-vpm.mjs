@@ -50,6 +50,9 @@ const SITE_URL = 'https://essentials.frenchoasis.studio';
 const REPO = 'FrankkDarko/fos-essentials-site';
 const OUT = join(siteRoot, 'dist-vpm');
 
+/** Date figee des entrees du zip. Le format ZIP ne descend pas sous 1980. */
+const EPOCH = new Date(Date.UTC(1980, 0, 1, 0, 0, 0));
+
 /**
  * Version faisant foi, lue dans les sources Unity.
  *
@@ -65,7 +68,15 @@ function versionFromUnity(pack) {
 		return match[1];
 	}
 
-	const file = join(unityRoot, pack.sourcePath, 'Runtime/AssemblyInfo.cs');
+	// Un pack purement editeur, comme Sync Doctor, n'a pas de dossier Runtime :
+	// il declare alors son outil dans l'assembly editeur.
+	const candidates = ['Runtime/AssemblyInfo.cs', 'Editor/AssemblyInfo.cs'].map(
+		(rel) => join(unityRoot, pack.sourcePath, rel)
+	);
+	const file = candidates.find((candidate) => existsSync(candidate));
+	if (!file) {
+		throw new Error(`AssemblyInfo introuvable pour ${pack.id} (${candidates.join(', ')})`);
+	}
 	const raw = readFileSync(file, 'utf8');
 	const block = /FOSTool\(([\s\S]*?)\)\]/.exec(raw);
 	if (!block) throw new Error(`FOSTool introuvable dans ${file}`);
@@ -76,7 +87,7 @@ function versionFromUnity(pack) {
 
 /** Liste récursivement les fichiers d'un dossier. */
 function walk(dir, base = dir, out = []) {
-	for (const entry of readdirSync(dir)) {
+	for (const entry of readdirSync(dir).sort()) {
 		const full = join(dir, entry);
 		if (statSync(full).isDirectory()) walk(full, base, out);
 		else out.push(relative(base, full).split('\\').join('/'));
@@ -94,8 +105,15 @@ function manifest(pack, version) {
 	}
 	for (const id of pack.requires ?? []) {
 		const dep = packs.find((p) => p.id === id);
-		if (dep?.vpmName && dep.minimumCore !== undefined) {
+		if (dep?.vpmName && dep.vpmPublished) {
 			dependencies[dep.vpmName] = dep.version;
+		} else if (dep) {
+			// Cas d'un pack gratuit dependant d'un pack payant, absent du
+			// listing : le signaler plutot que de produire un manifeste que le
+			// VCC ne saura pas resoudre.
+			console.warn(
+				`build-vpm: ${pack.id} depend de ${id}, absent du listing — dependance omise`
+			);
 		}
 	}
 
@@ -154,6 +172,13 @@ for (const pack of publishable) {
 	for (const relPath of walk(source)) {
 		zip.addLocalFile(join(source, relPath), dirname(relPath) === '.' ? '' : dirname(relPath));
 		files++;
+	}
+
+	// Zip reproductible : adm-zip inscrit sinon la date de modification de
+	// chaque fichier, si bien que reconstruire un contenu identique produit une
+	// empreinte differente — et invalide le zipSHA256 deja publie.
+	for (const entry of zip.getEntries()) {
+		entry.header.time = EPOCH;
 	}
 
 	const zipName = `${pack.vpmName}-${version}.zip`;

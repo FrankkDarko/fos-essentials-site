@@ -30,7 +30,137 @@
             "Assets/FOS/Core": ""
           },
           "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/core-v1.2.0/studio.frenchoasis.core-1.2.0.zip",
-          "zipSHA256": "faf42fa22c7a26c52a378fda085b7d02a74b10313578f5ef49d5823dc0029aac"
+          "zipSHA256": "40fc1bde6c00d1472d4785c2d6c79e29574e50f5096aba252ea3619a1289bb0d"
+        }
+      }
+    },
+    "studio.frenchoasis.teleport": {
+      "versions": {
+        "1.0.0": {
+          "name": "studio.frenchoasis.teleport",
+          "displayName": "FOS Teleport",
+          "version": "1.0.0",
+          "unity": "2022.3",
+          "description": "One-way teleport, triggered by interaction, by a trigger volume or by a UI button.",
+          "author": {
+            "name": "French Oasis Studio",
+            "url": "https://frenchoasis.studio"
+          },
+          "documentationUrl": "https://essentials.frenchoasis.studio/packs/teleport/",
+          "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/teleport/",
+          "vpmDependencies": {
+            "com.vrchat.worlds": "3.10.4",
+            "studio.frenchoasis.core": "1.0.0"
+          },
+          "legacyFolders": {
+            "Assets/FOS/Teleport": ""
+          },
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/teleport-v1.0.0/studio.frenchoasis.teleport-1.0.0.zip",
+          "zipSHA256": "3e66497392e621cbb71f515e6f63eba105ed86330c126e6003815f9a0814bf59"
+        }
+      }
+    },
+    "studio.frenchoasis.uiculling": {
+      "versions": {
+        "1.0.0": {
+          "name": "studio.frenchoasis.uiculling",
+          "displayName": "FOS UI Culling",
+          "version": "1.0.0",
+          "unity": "2022.3",
+          "description": "Disables world UIs when the local player is out of range, from a single central manager.",
+          "author": {
+            "name": "French Oasis Studio",
+            "url": "https://frenchoasis.studio"
+          },
+          "documentationUrl": "https://essentials.frenchoasis.studio/packs/ui-culling/",
+          "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/ui-culling/",
+          "vpmDependencies": {
+            "com.vrchat.worlds": "3.10.4",
+            "studio.frenchoasis.core": "1.0.0"
+          },
+          "legacyFolders": {
+            "Assets/FOS/UICulling": ""
+          },
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/ui-culling-v1.0.0/studio.frenchoasis.uiculling-1.0.0.zip",
+          "zipSHA256": "2bb39bf7e415932ca9dc7087d5aaa647874f42152d864768ee907e4cc2c656aa"
+        }
+      }
+    },
+    "studio.frenchoasis.mirror": {
+      "versions": {
+        "1.0.0": {
+          "name": "studio.frenchoasis.mirror",
+          "displayName": "FOS Mirror",
+          "version": "1.0.0",
+          "unity": "2022.3",
+          "description": "Switches mirrors on and off by distance, by button or by interaction, from a single central manager, with quality presets and a cost estimate.",
+          "author": {
+            "name": "French Oasis Studio",
+            "url": "https://frenchoasis.studio"
+          },
+          "documentationUrl": "https://essentials.frenchoasis.studio/packs/mirror/",
+          "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/mirror/",
+          "vpmDependencies": {
+            "com.vrchat.worlds": "3.10.4",
+            "studio.frenchoasis.core": "1.0.0"
+          },
+          "legacyFolders": {
+            "Assets/FOS/Mirror": ""
+          },
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/mirror-v1.0.0/studio.frenchoasis.mirror-1.0.0.zip",
+          "zipSHA256": "deee797a534c9ae99d61051ece84b4cb6a4d05be18c54a1d25afb8df7b412ea9"
+        }
+      }
+    },
+    "studio.frenchoasis.localization": {
+      "versions": {
+        "1.0.0": {
+          "name": "studio.frenchoasis.localization",
+          "displayName": "FOS Localization",
+          "version": "1.0.0",
+          "unity": "2022.3",
+          "description": "Translates the text and images of a world into as many languages as you want, with a table editor, CSV import and export, and the player's choice remembered between visits.",
+          "author": {
+            "name": "French Oasis Studio",
+            "url": "https://frenchoasis.studio"
+          },
+          "documentationUrl": "https://essentials.frenchoasis.studio/packs/localization/",
+          "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/localization/",
+          "vpmDependencies": {
+            "com.vrchat.worlds": "3.10.4",
+            "studio.frenchoasis.core": "1.0.0"
+          },
+          "legacyFolders": {
+            "Assets/FOS/Localization": ""
+          },
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/localization-v1.0.0/studio.frenchoasis.localization-1.0.0.zip",
+          "zipSHA256": "a50638aaca05f1f561b75cb8019a588b874362a28a76b2d4c394cc59c5570b65"
+        }
+      }
+    },
+    "studio.frenchoasis.syncdoctor": {
+      "versions": {
+        "1.0.0": {
+          "name": "studio.frenchoasis.syncdoctor",
+          "displayName": "FOS Sync Doctor",
+          "version": "1.0.0",
+          "unity": "2022.3",
+          "description": "Audits the synchronised behaviours of a world for the mistakes that never raise an error: late joiners, ownership, and broadcast events acting on the local player.",
+          "author": {
+            "name": "French Oasis Studio",
+            "url": "https://frenchoasis.studio"
+          },
+          "documentationUrl": "https://essentials.frenchoasis.studio/packs/sync-doctor/",
+          "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/sync-doctor/",
+          "vpmDependencies": {
+            "com.vrchat.worlds": "3.10.4",
+            "studio.frenchoasis.core": "1.1.0"
+          },
+          "legacyFolders": {
+            "Assets/FOS/SyncDoctor": ""
+          },
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/sync-doctor-v1.0.0/studio.frenchoasis.syncdoctor-1.0.0.zip",
+          "zipSHA256": "6d49abe2a85ed5a020179ec357533a47b0b2b53603ef04d89506719df229f26f"
         }
       }
     }
