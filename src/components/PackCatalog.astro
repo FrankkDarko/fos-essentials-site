@@ -38,7 +38,7 @@ const groups = (
 	groups.map((group) => (
 		<section>
 			{headings && group.items.length > 0 && <h2>{group.title}</h2>}
-			<div class="fos-catalog">
+			<div class="fos-catalog not-content">
 				{group.items.map((pack) => {
 					const deps = pack.requires
 						.map((id) => byId.get(id)?.shortName ?? id)
