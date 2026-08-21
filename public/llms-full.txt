@@ -14,9 +14,9 @@ Unity 2022.3.22f1 - VRChat SDK Worlds 3.10.4 - Built-in render pipeline.
 - [FOS Localization](https://essentials.frenchoasis.studio/packs/localization/): Translates the text and images of a world into as many languages as you want, with a table editor, CSV import and export, and the player's choice remembered between visits. Version 1.0.0, free.
 - [FOS Sync Doctor](https://essentials.frenchoasis.studio/packs/sync-doctor/): Audits the synchronised behaviours of a world for the mistakes that never raise an error: late joiners, ownership, and broadcast events acting on the local player. Version 1.2.0, free.
 - [FOS Access](https://essentials.frenchoasis.studio/packs/access/): Answers one question — does this player hold the key? A list in the inspector, a list downloaded from a URL, a VRChat product and the instance master, all cumulative, plus a gate that shows or hides objects accordingly. Version 1.0.0, free.
-- [FOS Tablet System — Standard](https://essentials.frenchoasis.studio/packs/tablet-system/): A tablet players summon in front of them: teleport menu, local toggles, world rules, and a full moderation panel with roles, freeze, isolation, mute and a synchronised log. Version 2.1.0, paid.
+- [FOS Tablet System — Standard](https://essentials.frenchoasis.studio/packs/tablet-system/): A tablet players summon in front of them: teleport menu, local toggles, world rules, and a full moderation panel with roles, freeze, isolation, mute and a synchronised log. Version 2.1.1, paid.
 - [FOS Tablet System — Pro](https://essentials.frenchoasis.studio/packs/tablet-system-pro/): Turns the four fixed roles into as many as your world needs, each with its own permissions, plus per-account roles, per-role visibility and per-role spawn points. Version 1.0.0, paid.
-- [FOS Lock Door System — Standard](https://essentials.frenchoasis.studio/packs/lock-door-system/): A door players lock behind them: who is inside, do-not-disturb, anonymous mode, a doorbell with a camera view, and passages reserved to whoever holds the key. Version 2.0.0, paid.
+- [FOS Lock Door System — Standard](https://essentials.frenchoasis.studio/packs/lock-door-system/): A door players lock behind them: who is inside, do-not-disturb, anonymous mode, a doorbell with a camera view, and passages reserved to whoever holds the key. Version 2.0.1, paid.
 
 ## Guides
 
