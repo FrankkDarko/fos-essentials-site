@@ -27,6 +27,12 @@ type Dict = Record<string, string>;
 
 export const UI: Record<Lang, Dict> = {
 	en: {
+		navDownload: 'Download',
+		navPacks: 'Packs',
+		navGuides: 'Guides',
+		navFaq: 'FAQ',
+		navLabel: 'Sections',
+		guidesIntro: 'Practical answers to the problems VRChat world creators actually run into.',
 		addToVcc: 'Add to VRChat Creator Companion',
 		orPasteUrl: 'Or paste this URL into VCC, under Settings then Packages then Add Repository:',
 		packageId: 'Package ID',
@@ -53,6 +59,12 @@ export const UI: Record<Lang, Dict> = {
 		none: 'None',
 	},
 	fr: {
+		navDownload: 'Téléchargement',
+		navPacks: 'Packs',
+		navGuides: 'Guides',
+		navFaq: 'FAQ',
+		navLabel: 'Sections',
+		guidesIntro: 'Des réponses concrètes aux problèmes que rencontrent vraiment les créateurs de mondes VRChat.',
 		addToVcc: 'Ajouter au VRChat Creator Companion',
 		orPasteUrl: 'Ou collez cette URL dans le VCC, sous Settings puis Packages puis Add Repository :',
 		packageId: 'Identifiant du paquet',
@@ -79,6 +91,12 @@ export const UI: Record<Lang, Dict> = {
 		none: 'Aucune',
 	},
 	es: {
+		navDownload: 'Descargas',
+		navPacks: 'Packs',
+		navGuides: 'Guías',
+		navFaq: 'FAQ',
+		navLabel: 'Secciones',
+		guidesIntro: 'Respuestas prácticas a los problemas que de verdad encuentran quienes crean mundos de VRChat.',
 		addToVcc: 'Añadir al VRChat Creator Companion',
 		orPasteUrl: 'O pega esta URL en el VCC, en Settings, Packages y Add Repository:',
 		packageId: 'ID del paquete',
@@ -105,6 +123,12 @@ export const UI: Record<Lang, Dict> = {
 		none: 'Ninguna',
 	},
 	de: {
+		navDownload: 'Download',
+		navPacks: 'Packs',
+		navGuides: 'Anleitungen',
+		navFaq: 'FAQ',
+		navLabel: 'Bereiche',
+		guidesIntro: 'Praktische Antworten auf die Probleme, die beim Bauen von VRChat-Welten wirklich auftreten.',
 		addToVcc: 'Zum VRChat Creator Companion hinzufügen',
 		orPasteUrl: 'Oder füge diese URL im VCC unter Settings, Packages, Add Repository ein:',
 		packageId: 'Paket-ID',

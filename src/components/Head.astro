@@ -161,4 +161,57 @@ const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
 <meta name="twitter:image" content={ogImage} />
 <meta name="theme-color" content="#299e8f" />
 
+<!--
+  Redirection vers la langue du navigateur.
+
+  Le site est statique : il n'y a pas de serveur pour negocier la langue, la
+  bascule se fait donc dans le navigateur. Trois garde-fous :
+
+  - elle n'agit que sur la racine anglaise, jamais sur une page precise. Un
+    lien partage ou un resultat de recherche doit ouvrir ce qu'il annonce ;
+  - un choix explicite gagne : des qu'une page est visitee, sa langue est
+    memorisee, et une visite ulterieure sur la racine la respecte ;
+  - l'anglais reste le repli. Une langue non traduite ne redirige pas, et un
+    navigateur qui prefere l'anglais avant le francais reste sur l'anglais.
+-->
+<script is:inline>
+	(function () {
+		var LANGS = ['fr', 'es', 'de'];
+		var KEY = 'fos-lang';
+		var segment = location.pathname.split('/')[1];
+		var current = LANGS.indexOf(segment) >= 0 ? segment : 'en';
+
+		try {
+			var saved = localStorage.getItem(KEY);
+
+			if (location.pathname === '/') {
+				// Un choix deja fait passe avant le navigateur : sans cela, on
+				// ramenerait a l'anglais quelqu'un qui lit le site en francais
+				// depuis des semaines, en ecrasant sa preference au passage.
+				if (saved) {
+					if (LANGS.indexOf(saved) >= 0) location.replace('/' + saved + '/');
+					return;
+				}
+
+				var wanted = navigator.languages || [navigator.language || ''];
+				for (var i = 0; i < wanted.length; i++) {
+					var code = String(wanted[i]).slice(0, 2).toLowerCase();
+					// L'anglais rencontre avant une langue traduite tranche la
+					// question : cette personne prefere l'anglais.
+					if (code === 'en') break;
+					if (LANGS.indexOf(code) >= 0) {
+						localStorage.setItem(KEY, code);
+						location.replace('/' + code + '/');
+						return;
+					}
+				}
+			}
+
+			localStorage.setItem(KEY, current);
+		} catch (error) {
+			// Stockage refuse (navigation privee stricte) : on ne redirige pas.
+		}
+	})();
+</script>
+
 <script type="application/ld+json" set:html={jsonLd} is:inline />

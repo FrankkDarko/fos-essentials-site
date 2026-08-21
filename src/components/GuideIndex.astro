@@ -1,0 +1,45 @@
+---
+/**
+ * Sommaire des guides, construit depuis la collection.
+ *
+ * Le menu de l'en-tete a besoin d'une page /guides/ : `autogenerate` remplit la
+ * barre laterale mais ne cree aucun index. Lister le dossier plutot que d'ecrire
+ * les entrees a la main evite qu'un guide ajoute soit oublie ici.
+ */
+import { getCollection } from 'astro:content';
+import { langFromPath } from '../i18n';
+
+const lang = langFromPath(Astro.url.pathname);
+const prefix = lang === 'en' ? 'guides/' : `${lang}/guides/`;
+
+const entries = await getCollection('docs', ({ id }) => id.startsWith(prefix));
+
+// Un guide non traduit n'existe que sous sa forme anglaise : on retombe dessus
+// pour que le sommaire reste complet dans toutes les langues.
+const english = await getCollection('docs', ({ id }) => id.startsWith('guides/'));
+const bySlug = new Map(entries.map((e) => [e.id.slice(prefix.length), e]));
+
+const guides = english
+	.map((source) => {
+		const slug = source.id.slice('guides/'.length);
+		const entry = bySlug.get(slug) ?? source;
+		return {
+			href: lang === 'en' ? `/guides/${slug}/` : `/${lang}/guides/${slug}/`,
+			title: entry.data.title,
+			description: entry.data.description ?? '',
+			order: entry.data.sidebar?.order ?? 99,
+		};
+	})
+	.sort((a, b) => a.order - b.order);
+---
+
+<div class="fos-guides not-content">
+	{
+		guides.map((guide) => (
+			<a class="fos-guide" href={guide.href}>
+				<span class="fos-guide__title">{guide.title}</span>
+				<span class="fos-guide__desc">{guide.description}</span>
+			</a>
+		))
+	}
+</div>

@@ -1,0 +1,43 @@
+---
+/**
+ * Titre du site, suivi d'un menu de categories.
+ *
+ * La barre laterale liste tout, mais elle n'existe pas sur la page d'accueil,
+ * qui utilise le gabarit splash. Ce menu donne les quatre destinations
+ * principales depuis n'importe ou, accueil compris.
+ *
+ * Il disparait sous 50rem : Starlight y resserre l'en-tete pour le menu mobile,
+ * qui couvre deja la navigation.
+ */
+import Default from '@astrojs/starlight/components/SiteTitle.astro';
+import { langFromPath, localized, UI } from '../i18n';
+
+const lang = langFromPath(Astro.url.pathname);
+const t = UI[lang];
+const here = Astro.url.pathname;
+
+const entries = [
+	{ slug: 'download', label: t.navDownload },
+	{ slug: 'catalog', label: t.navPacks },
+	{ slug: 'guides', label: t.navGuides },
+	{ slug: 'faq', label: t.navFaq },
+];
+---
+
+<Default />
+
+<nav class="fos-nav" aria-label={t.navLabel}>
+	{
+		entries.map((entry) => {
+			const href = localized(lang, entry.slug);
+			// `/guides` n'est pas une page : le lien mene au premier guide, mais
+			// l'onglet doit rester allume sur toute la section.
+			const active = here.startsWith(href) || here.includes(`/${entry.slug}/`);
+			return (
+				<a href={href} class="fos-nav__link" aria-current={active ? 'page' : undefined}>
+					{entry.label}
+				</a>
+			);
+		})
+	}
+</nav>

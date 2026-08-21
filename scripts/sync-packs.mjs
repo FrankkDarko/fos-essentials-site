@@ -41,6 +41,9 @@ const DOCS = join(siteRoot, 'src/content/docs');
 const PUBLIC = join(siteRoot, 'public');
 const SITE = 'https://essentials.frenchoasis.studio';
 const NL = String.fromCharCode(10);
+
+/** Langues dans lesquelles un README peut exister, en plus de l'anglais. */
+const TRANSLATED = ['fr', 'es', 'de'];
 const siteMeta = JSON.parse(
 	readFileSync(join(siteRoot, 'src/data/site.json'), 'utf8')
 );
@@ -65,10 +68,11 @@ function stripLeadingH1(body) {
 }
 
 /** Réécrit les liens relatifs entre fichiers du pack vers les routes du site. */
-function rewriteLinks(body, pack) {
+function rewriteLinks(body, pack, lang = 'en') {
+	const prefix = lang === 'en' ? '' : `/${lang}`;
 	return body
-		.replace(/\]\(\.?\/?CHANGELOG\.md\)/g, `](/changelogs/${pack.id}/)`)
-		.replace(/\]\(\.?\/?README\.md\)/g, `](/${pack.docsSlug}/)`);
+		.replace(/\]\(\.?\/?CHANGELOG\.md\)/g, `](${prefix}/changelogs/${pack.id}/)`)
+		.replace(/\]\(\.?\/?README\.md\)/g, `](${prefix}/${pack.docsSlug}/)`);
 }
 
 /**
@@ -79,10 +83,18 @@ function rewriteLinks(body, pack) {
  * décalage entre le site et le pack passerait inaperçu, ce qui est arrivé le
  * 20/08/2026 avec le Core et Tablet System.
  */
-function versionBanner(pack) {
-	const parts = [`**Version ${pack.version}**`];
+const BANNER = {
+	en: { version: 'Version', core: 'requires FOS Essentials Core', later: 'or later', also: 'also requires' },
+	fr: { version: 'Version', core: 'exige FOS Essentials Core', later: 'ou plus récent', also: 'exige aussi' },
+	es: { version: 'Versión', core: 'requiere FOS Essentials Core', later: 'o posterior', also: 'también requiere' },
+	de: { version: 'Version', core: 'benötigt FOS Essentials Core', later: 'oder neuer', also: 'benötigt außerdem' },
+};
+
+function versionBanner(pack, lang = 'en') {
+	const t = BANNER[lang] ?? BANNER.en;
+	const parts = [`**${t.version} ${pack.version}**`];
 	if (pack.minimumCore) {
-		parts.push(`requires FOS Essentials Core ${pack.minimumCore} or later`);
+		parts.push(`${t.core} ${pack.minimumCore} ${t.later}`);
 	}
 	if (pack.requires.length) {
 		const deps = pack.requires
@@ -91,7 +103,7 @@ function versionBanner(pack) {
 				return dep ? `${dep.name} ${dep.version}` : id;
 			})
 			.join(', ');
-		parts.push(`also requires ${deps}`);
+		parts.push(`${t.also} ${deps}`);
 	}
 	return `${parts.join(' · ')}\n`;
 }
@@ -119,24 +131,43 @@ const missing = [];
 for (const pack of packs) {
 	const packDir = join(unityRoot, pack.sourcePath);
 
-	// --- README -> /packs/<id> ---
+	// --- README -> /packs/<id>, et /<lang>/packs/<id> si traduit ---
+	//
+	// Le README anglais fait foi ; un `README.fr.md` pose a cote de lui produit
+	// la page francaise. La traduction vit donc dans le depot Unity, au meme
+	// endroit que sa source, et part avec le pack chez l'acheteur — plutot que
+	// d'etre recopiee ici, ou elle divergerait au premier changement.
 	const readmePath = join(packDir, 'README.md');
 	if (existsSync(readmePath)) {
-		const body = rewriteLinks(
-			stripLeadingH1(stripBom(readFileSync(readmePath, 'utf8'))),
-			pack
-		);
-		emit(
-			join(DOCS, `${pack.docsSlug}.md`),
-			{
-				title: yamlString(pack.name),
-				description: yamlString(pack.description.en),
-				editUrl: 'false',
-				sidebar: `\n  order: ${pack.order}`,
-			},
-			`${versionBanner(pack)}\n${body}`
-		);
-		written++;
+		for (const lang of ['en', ...TRANSLATED]) {
+			const file =
+				lang === 'en' ? readmePath : join(packDir, `README.${lang}.md`);
+			if (!existsSync(file)) continue;
+
+			const body = rewriteLinks(
+				stripLeadingH1(stripBom(readFileSync(file, 'utf8'))),
+				pack,
+				lang
+			);
+
+			emit(
+				lang === 'en'
+					? join(DOCS, `${pack.docsSlug}.md`)
+					: join(DOCS, lang, `${pack.docsSlug}.md`),
+				{
+					title: yamlString(pack.name),
+					description: yamlString(
+						pack.description[lang] ?? pack.description.en
+					),
+					editUrl: 'false',
+					sidebar: `\n  order: ${pack.order}`,
+				},
+				`${versionBanner(pack, lang)}\n${body}`
+			);
+
+			if (lang === 'en') fullDocs.set(pack.id, body);
+			written++;
+		}
 	} else {
 		missing.push(`${pack.id}: README.md`);
 	}

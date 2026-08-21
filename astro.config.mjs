@@ -30,6 +30,8 @@ export default defineConfig({
 				// Menu des boutiques dans l'en-tete, signature du studio en pied.
 				SocialIcons: './src/components/SocialIcons.astro',
 				Footer: './src/components/Footer.astro',
+				// Menu de categories a cote du nom du site.
+				SiteTitle: './src/components/SiteTitle.astro',
 			},
 			social: [
 				{

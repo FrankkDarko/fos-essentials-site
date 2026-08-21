@@ -30,3 +30,2029 @@ Unity 2022.3.22f1 - VRChat SDK Worlds 3.10.4 - Built-in render pipeline.
 - [Moderating a VRChat world](https://essentials.frenchoasis.studio/guides/vrchat-world-moderation/): What a world creator can and cannot do about disruptive visitors in VRChat, and how in-world moderation tools with roles actually work.
 - [World UI and draw calls in VRChat](https://essentials.frenchoasis.studio/guides/vrchat-world-ui-performance/): Why world-space canvases cost frames even when nobody looks at them, and how distance culling keeps a UI-heavy VRChat world fast.
 
+
+# FOS Essentials Core 1.3.0
+
+Shared foundation of every **FOS Essentials** tool for VRChat.
+Unity 2022.3.22f1 · VRChat SDK Worlds 3.10.4 · UdonSharp 1.x
+
+---
+
+## What the Core provides
+
+| Side | Item | Role |
+|---|---|---|
+| Runtime | `FOSBehaviour` | Base class of every FOS behaviour: logging, ownership, sync |
+| Runtime | `FOSPlayerRegistry` | Player list refreshed on join/leave, with no per-frame allocation |
+| Runtime | `FOSToolAttribute` | Lets a tool declare itself to the Hub |
+| Runtime | `FOSSectionAttribute` | Localisable replacement for `[Header]` |
+| Runtime | `FOSVersion` | Identity and version constants (editor use only) |
+| Editor | `FOSBrandingSettings` | Logo, colour, Discord / Shop / site / docs URLs — one single asset |
+| Editor | `FOSDefaultInspector` | Automatic FOS banner on anything deriving from `FOSBehaviour` |
+| Editor | `FOSInspectorBase` | Base for a custom inspector that keeps the banner |
+| Editor | `FOSLocalizedInspector` | Translated field labels, tooltips and section titles |
+| Editor | `FOSLoc` | Translation lookup |
+| Editor | `FOSHubWindow` | `Tools > FOS Essentials > Hub`: environment, installed tools, links |
+| Editor | `FOSProgramAssets` | Generates missing `UdonSharpProgramAsset` (see below) |
+| Editor | `FOSCoreBootstrap` | Registers every FOS runtime assembly with UdonSharp |
+
+### Editor entry points
+
+| Call | Effect |
+|---|---|
+| `FOS Essentials > Hub` | Status window: environment, prefabs, tools, links |
+| `FOS Essentials > <Pack> > <Prefab>` | Drops that prefab into the open scene |
+| `FOS Essentials > Generate Missing Program Assets` | Creates the missing `.asset` files |
+| `FOS Essentials > Rebuild Prefab Menu` | Regenerates the per-pack menu entries |
+| `FOS Essentials > Check event wiring` | Lists every UI control whose event matches no method |
+| `FOSPrefabCatalog.Scan()` | Prefabs exposed by every pack, grouped by pack |
+| `FOSPrefabCatalog.InstantiateInScene(path)` | Drops a prefab into the open scene |
+| `FOSLoc.T("key")` | Translated text; falls back to English, then to the key |
+| `FOSLoc.Format("key", args)` | Same, through `string.Format` |
+| `FOSLocalizedInspector.Draw(so, type)` | Translated inspector, replaces `DrawDefaultInspector()` |
+| `FOSProgramAssets.GenerateMissing()` | Same as the menu item, from code. Returns how many were created |
+| `FOSProgramAssets.FindMissing()` | Types that have no program asset yet |
+| `FOSCoreBootstrap.EnsureUdonSharpAssemblyRegistered()` | Registers every FOS runtime asmdef with UdonSharp |
+| `FOSBranding.Settings` | Branding access — never returns `null` |
+| `FOSHeader.Draw(name, version)` | Draws the banner inside a custom window |
+
+---
+
+## First launch
+
+1. Open Unity and let it finish compiling.
+2. The Core creates the following on its own:
+   - `Assets/FOS/<Tool>/Runtime/FOS.<Tool>.Runtime.asset` — UdonSharp registration, for every FOS pack
+   - `Assets/FOS/Core/Editor/Branding/FOSBrandingSettings.asset` — branding
+   - an `UdonSharpProgramAsset` next to every concrete FOS behaviour
+3. Open `FOS Essentials > Hub` and check that every status dot is green.
+4. From the Hub, click **Open branding settings** and fill in the **logo**, the
+   **Discord URL** and the **shop URL**. While a URL is empty its button stays
+   disabled instead of opening a dead link.
+
+The Hub also lists every prefab shipped by the installed packs, one button each, and
+drops it into the open scene in front of the scene view.
+
+---
+
+## The prefab menu
+
+Every prefab found under `Assets/FOS/<Pack>/Prefabs/` also gets its own entry under
+`FOS Essentials > <Pack> >`, so a prefab can be added without opening the Hub.
+
+`[MenuItem]` is an attribute, therefore frozen at compile time: those entries cannot be
+built from a folder scan at runtime. `FOSPrefabMenuGenerator` writes them instead into
+`Assets/FOS/Core/Editor/Generated/FOSPrefabMenu.generated.cs`, using nothing but public
+API — Unity does expose a dynamic `Menu.AddMenuItem`, but it is internal and undocumented,
+which is not something to ship in a sold asset.
+
+The file is regenerated when the editor loads, when a prefab is added, moved or deleted
+under a `Prefabs/` folder, and from **Rebuild Prefab Menu**. It is only rewritten when its
+content actually differs — otherwise writing it would trigger a compile, which would
+trigger generation, which would rewrite it again.
+
+Do not edit the generated file: it is overwritten. Add or rename prefabs instead.
+
+### Packs shipped in several editions
+
+A pack sold as Standard, Pro or as a custom build puts each edition in its own folder:
+
+```
+Assets/FOS/<Pack>/<Edition>/Prefabs/
+```
+
+Both layouts are recognised, and a pack that has a single edition changes nothing. The
+edition becomes a real submenu — `FOS Essentials > FOS Tablet System > Standard > …` —
+and its own block in the Hub.
+
+A prefab put anywhere else is still invisible to both. That is the whole discovery rule:
+`Prefabs/` sits either directly under the pack, or one folder deeper.
+
+---
+
+## Writing a FOS behaviour
+
+```csharp
+using FOS.Core;
+using UdonSharp;
+using UnityEngine;
+
+namespace FOS.MyTool
+{
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
+    public class MySwitch : FOSBehaviour
+    {
+        [SerializeField] private GameObject target;
+
+        [UdonSynced] private bool _isOn;
+
+        public override void Interact()
+        {
+            FOSTakeOwnership();   // ownership is mandatory before writing a synced variable
+            _isOn = !_isOn;
+            Apply();
+            FOSSync();            // RequestSerialization(), but only when we are the owner
+        }
+
+        public override void OnDeserialization()
+        {
+            Apply();              // replays the state on remotes AND on late joiners
+        }
+
+        private void Apply()
+        {
+            target.SetActive(_isOn);
+            FOSLog("Switch: " + _isOn);
+        }
+    }
+}
+```
+
+The banner with the logo and the Discord / Shop buttons shows up **automatically**:
+no editor class to write.
+
+### Custom inspector
+
+```csharp
+using FOS.Core.EditorTools;
+using UnityEditor;
+
+[CustomEditor(typeof(MySwitch))]
+public class MySwitchEditor : FOSInspectorBase
+{
+    protected override void OnFOSInspectorGUI()
+    {
+        base.OnFOSInspectorGUI();   // translated fields
+        EditorGUILayout.HelpBox("What this tool does.", MessageType.Info);
+    }
+}
+```
+
+> UdonSharp accepts **only one** `[CustomEditor]` per type. Declaring two logs an error
+> and one of them is ignored.
+>
+> Do not call `DrawDefaultInspector()` here: it loses the translation. `base.OnFOSInspectorGUI()`
+> draws the fields through `FOSLocalizedInspector`.
+
+---
+
+## Creating a new tool that depends on the Core
+
+```
+Assets/FOS/<Tool>/
+├── Runtime/
+│   ├── FOS.<Tool>.Runtime.asmdef   → references: FOS.Core.Runtime, UdonSharp.Runtime,
+│   │                                              VRC.Udon, VRC.SDK3, VRC.SDKBase
+│   ├── AssemblyInfo.cs             → [assembly: FOSTool("FOS <Tool>", "1.0.0", ...)]
+│   └── ...
+├── Editor/          (optional)
+├── Prefabs/
+└── README.md
+```
+
+The asmdef **must** be named `FOS.<Tool>.Runtime`: that is how the Core finds it and
+registers it with UdonSharp automatically.
+
+A tool shipped in several editions repeats that layout one folder deeper, and each
+edition gets its own assembly and its own `[FOSTool]` declaration:
+
+```
+Assets/FOS/<Tool>/
+├── Standard/
+│   ├── Runtime/    → FOS.<Tool>.Standard.Runtime.asmdef
+│   ├── Editor/     → FOS.<Tool>.Standard.Editor.asmdef
+│   └── Prefabs/
+└── Pro/
+    ├── Runtime/    → FOS.<Tool>.Pro.Runtime.asmdef, references FOS.<Tool>.Standard.Runtime
+    ├── Editor/
+    └── Prefabs/
+```
+
+The name still has to end in `.Runtime`, which is all the Core scan looks at — the depth
+does not matter. Each edition then shows up in the Hub as its own tool, with its own
+version number.
+
+`AssemblyInfo.cs`:
+
+```csharp
+using FOS.Core;
+
+[assembly: FOSTool(
+    "FOS Doors",
+    "1.0.0",
+    Description = "doors.tool.description",   // a translation key, resolved by the Hub
+    MinimumCoreVersion = "1.0.0")]
+```
+
+The tool then shows up in the Hub with its version, and the Hub warns when the
+installed Core is too old for it. `Description` accepts either a translation key or
+plain text; a key is preferred so the Hub can show it in the user's language.
+
+---
+
+## The asmdef × UdonSharp trap
+
+UdonSharp only compiles scripts from `Assembly-CSharp` and from assemblies declared by
+an `UdonSharpAssemblyDefinition` asset (`CompilationContext.IsUdonSharpAssembly`).
+
+An `UdonSharpBehaviour` sitting in an unregistered asmdef is **silently ignored**: no
+error, the component drops into the scene, the inspector looks normal, and the
+behaviour does strictly nothing in game.
+
+`FOSCoreBootstrap` handles this for **every** pack: it scans `Assets/FOS` for asmdefs
+named `FOS.*.Runtime` and creates whatever registration asset is missing. A new tool
+therefore needs no manual step.
+
+The Hub shows the state of that registration, with a **Repair now** button.
+
+---
+
+## The program asset trap
+
+**UdonSharp does not generate `UdonSharpProgramAsset` files.** The compiler only handles
+scripts that already have one (`UdonSharpCompilerV1`, `module.programAsset`) — which is
+why every script shipped with the SDK comes as a `.cs` + `.asset` pair. Without its
+asset, a behaviour cannot be added to a GameObject at all.
+
+The Core takes care of it: `FOSProgramAssets` scans types deriving from `FOSBehaviour`
+and creates the missing `.asset` next to the `.cs`. It runs when the editor loads, and
+on demand from the Hub or the Tools menu.
+
+Practical consequences:
+
+- Writing a new FOS behaviour needs **no manual step**. Let Unity compile, the asset appears.
+- **Abstract** and **generic** classes are deliberately skipped: UdonSharp refuses to
+  associate a program asset with them (`Abstract U# behaviours cannot have an associated
+  U# program asset`). That is why `FOSBehaviour` is abstract.
+- A class must be named **exactly** like its `.cs` file, otherwise the match fails and
+  U# raises `UdonSharpBehaviour classes must have the same name as their containing .cs file`.
+- An existing `.asset` file is never overwritten.
+
+---
+
+## Localisation
+
+The editor interface is translated into **English, French, Spanish and German**.
+The language is picked in the Hub or in the branding settings; it is stored in
+`EditorPrefs`, so it is per-machine, and defaults to *Auto* (follows Unity's language,
+falling back to English).
+
+### Translating a new string
+
+1. Add the key to the four tables in `FOSCoreStrings.cs`.
+2. Call it with `FOSLoc.T("my.key")`, or `FOSLoc.Format("my.key", arg)` when the text
+   contains a `{0}`.
+
+A missing key falls back to English, then to the raw key. Seeing the raw key in the
+interface is **intentional**: a missing translation is spotted immediately instead of
+going unnoticed.
+
+### Translating a component's fields
+
+Labels and tooltips do not come from `[Tooltip]` but from the keys
+`field.DeclaringType.fieldName` and `tip.DeclaringType.fieldName`.
+
+The type that **declares** the field is what counts, not the inspected type: a field on
+`FOSBehaviour` therefore has a single translation, valid for every tool deriving from it.
+
+`[Tooltip]` attributes stay written **in English** in the code: they are the fallback and
+they document the field for anyone reading the sources.
+
+For a section title, do not use `[Header]` — its text is frozen at compile time. Use:
+
+```csharp
+[FOSSection("section.core.diagnostic", "Diagnostics")]
+[Tooltip("English fallback tooltip.")]
+[SerializeField] private bool myField;
+```
+
+### The rule, no exceptions
+
+> **1.** Every user-visible string **must** be translatable, so it must go through `FOSLoc`.
+> **2.** Whatever **cannot** be translated is written **in English**.
+
+### What cannot be translated, and is therefore written in English
+
+| Item | Reason |
+|---|---|
+| Variable, field, method and class names | C# identifiers |
+| Namespaces, asmdef and assembly names | Identifiers |
+| `[MenuItem]` and `[AddComponentMenu]` paths | Unity freezes them at compile time |
+| `[Tooltip]` fallback text | Used when the key is missing |
+| Second argument of `[FOSSection("key", "Fallback")]` | Same |
+| Udon runtime logs | Udon has neither `Dictionary` nor generics |
+| Messages aimed at a tool author | They address the developer |
+| File names, folder names, translation keys | Identifiers |
+
+Text displayed **in game** by a future tool is a different mechanism (index-based arrays
+on the Udon side) and is not covered by the Core at this stage.
+
+### Adding a language
+
+Add a value **at the end** of the `FOSLanguage` enum — never in the middle, the values
+are written as-is into the user's `EditorPrefs` — then a table in `FOSCoreStrings` and a
+case in `FOSLoc.LanguageLabel`.
+
+---
+
+## UdonSharp reminders that apply to the whole pack
+
+- Not supported: user classes/structs other than `UdonSharpBehaviour`, interfaces,
+  generics, `delegate`/`event`/lambdas, LINQ, `try`/`catch`, `async`, coroutines,
+  `[,]` arrays, `params`, default parameter values, `ref`/`out`.
+- Delays: `SendCustomEventDelayedSeconds("Method", t)`, never a coroutine.
+- Networking: ownership is mandatory before writing an `[UdonSynced]` variable;
+  `SendCustomNetworkEvent` is **not** replayed for late joiners — state must be
+  rebuildable from synced variables and `OnDeserialization`.
+- Budgets: Continuous ≈ 200 bytes per behaviour; Manual is larger but rate-limited
+  (≈ 1 useful serialisation per second). Never spam `RequestSerialization()`.
+- Quest: mind the draw call budget, use mobile shaders, avoid heavy post-processing.
+
+
+# FOS Teleport 1.0.0
+
+One-way A → B teleport, with three triggers.
+Requires **FOS Essentials Core 1.0.0**.
+
+---
+
+## The three components
+
+| Component | Trigger | Required on the GameObject |
+|---|---|---|
+| `FOSTeleportInteract` | Player interaction ("Use") | A `Collider` |
+| `FOSTeleportTrigger` | Entering a volume | A `Collider` with **Is Trigger** enabled |
+| `FOSTeleportButton` | Click on a UI `Button` | A `Button` referenced in the inspector |
+
+All three derive from `FOSTeleporterBase`, which holds the destination, the options and
+the move itself. Adding a fourth trigger takes a three-line class.
+
+Menu: `Add Component > FOS Essentials > Teleport > ...`
+
+---
+
+## Setup
+
+1. Drop the component on the object that triggers the teleport.
+2. Create an empty GameObject where the player should land, rotate it to face the
+   intended direction, and drag it into **Destination**. Its rotation is used, not only
+   its position.
+3. For the button variant: drag the `Button` into its field, then click **Wire this
+   Button**. The `OnClick` is filled in automatically.
+
+---
+
+## Options
+
+| Option | Effect |
+|---|---|
+| **Keep momentum** | Keeps the player's speed. Off by default: arriving at full speed makes the player slide or fall. |
+| **Align play space** | VR only. Rotates the whole play space towards the destination, not just the player. Use it when the destination must be faced precisely. |
+| **Cooldown** | Seconds before the teleporter can fire again. 0.5 s by default. |
+| **Teleport sound** | `AudioSource` played locally. Optional. |
+| **On teleport** | Components notified through the public `OnFOSTeleported()` event. |
+
+---
+
+## Things worth knowing
+
+### Teleporting is local, and that is on purpose
+
+The VRChat API refuses to move a remote player — ClientSim says so explicitly:
+*"Teleporting remote players will do nothing"*. Each client therefore moves its own
+player. Consequences:
+
+- **no networking, no ownership, no bandwidth**;
+- a teleported player is teleported **for everyone**, because VRChat already
+  synchronises their position;
+- teleporting somebody else is impossible with this component. That would be a
+  different tool, with synchronisation.
+
+### The trigger trap
+
+`OnPlayerTriggerEnter` fires on **every client**, for **every player** entering the
+volume. Without filtering, a remote player walking through the trigger would teleport
+the local player standing on the other side of the world. `FOSTeleportTrigger` checks
+`player.isLocal` before anything else.
+
+### Bouncing between two teleporters
+
+If A's destination sits inside B's volume and vice versa, the player ping-pongs. The
+cooldown limits the damage, but **the real fix is to place the landing point outside the
+volume of the facing teleporter**.
+
+### Order of operations
+
+The cooldown lock is set **before** the move: teleporting makes the player leave and
+enter volumes, and those events can come back in the same frame.
+
+---
+
+## Extending
+
+A new trigger is just a class deriving from `FOSTeleporterBase` that calls
+`TeleportLocalPlayer()`:
+
+```csharp
+using UdonSharp;
+using UnityEngine;
+
+namespace FOS.Teleport
+{
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    public class FOSTeleportOnTimer : FOSTeleporterBase
+    {
+        private void Start()
+        {
+            SendCustomEventDelayedSeconds(nameof(TeleportLocalPlayer), 10f);
+        }
+    }
+}
+```
+
+Reminder: the class name must match the `.cs` file name **exactly**, and the program
+asset is created on its own the next time the editor loads.
+
+
+# FOS UI Culling 1.0.0
+
+Disables world UIs when the local player is out of range, driven by a single central
+manager. Requires **FOS Essentials Core 1.0.0**.
+
+---
+
+## Setup
+
+1. Create an empty GameObject and add **FOS Essentials > UI Culling > UI Culling Manager**.
+2. Click **Scan the scene**. Every World Space canvas gets a `FOSUICullingTarget`, its
+   `Canvas` and `GraphicRaycaster` are wired up, and the manager's list is filled.
+3. Set **Default distance**. Override it per UI in the target component when needed.
+
+Re-run the scan after adding new UIs. Existing targets are never overwritten, so any
+manual tuning survives.
+
+---
+
+## Components
+
+| Component | Role |
+|---|---|
+| `FOSUICullingManager` | One per scene. Owns the loop and drives everything. |
+| `FOSUICullingTarget` | One per UI. Holds settings only — it does **no** per-frame work. |
+
+---
+
+## Options
+
+| Option | Effect |
+|---|---|
+| **Default distance** | Metres below which a UI is shown, unless the target overrides it. |
+| **Show distance** (target) | Per-UI override. `-1` means "inherit the manager's default". |
+| **Distance reference** (target) | Point the distance is measured from. Empty means the Canvas itself. |
+| **Hysteresis** | Extra metres before hiding again. Stops a UI flickering when the player stands on the limit. |
+| **Checks per frame** | How many UIs are tested each frame. 4 by default. |
+| **Line of sight** | Optional occlusion pass. Off by default. |
+| **Obstacle layers** | Layers that count as blockers for the occlusion pass. |
+
+---
+
+## How a UI decides its distance
+
+Two levels, resolved once when the manager starts:
+
+1. The manager's **Default distance** applies to every UI.
+2. A target's **Show distance** overrides it — unless it is left at **`-1`**, which means
+   *inherit the manager's value*.
+
+```csharp
+float distance = target.showDistance;
+if (distance < 0f) distance = defaultShowDistance;
+```
+
+So a scene with `Default distance = 15` and one target set to `8` shows that one UI at
+8 metres and everything else at 15.
+
+The target's inspector spells out the result — *"Effective distance: 15 m (inherited from
+the manager)"* — so you never have to remember what `-1` means.
+
+Because the value is read **once at `Start`**, changing a distance at runtime requires
+calling `RefreshTargets()` on the manager.
+
+### Where the distance is measured from
+
+From the Canvas transform, which for a panel is its **pivot**, usually its centre. A wide
+panel therefore appears based on its centre rather than its nearest edge.
+
+When that matters, drop any Transform into **Distance reference** on the target — an
+empty child placed at the edge, for example — and the measurement uses that instead.
+
+---
+
+## Design notes
+
+### Why one central manager instead of a script per UI
+
+Udon is an interpreted VM, roughly two orders of magnitude slower than C#. The dominant
+cost is **the number of behaviours ticking**, not the arithmetic they do. One behaviour
+comparing thirty squared distances is far cheaper than thirty behaviours doing anything
+at all.
+
+`FOSUICullingTarget` therefore holds configuration and nothing else. The manager reads it
+once in `Start`, caches it into flat arrays, and from then on only touches Unity
+components directly. Thirty UIs cost exactly one active behaviour.
+
+### Why distance and not a raycast
+
+A ray answers *"is something in the way"*, not *"am I close"*. It cannot replace the
+distance test — you would still need one first. Raycasting has a real use here, but as a
+second stage: see **Line of sight** below.
+
+### Why distance and not trigger colliders
+
+Trigger volumes are genuinely cheap — event driven, broadphase handled in native code.
+They lose on three practical points:
+
+- a collider has to be sized per UI, which defeats automatic setup;
+- `OnPlayerTriggerEnter` only fires on the GameObject carrying the collider, forcing a
+  behaviour per UI to receive it;
+- the player capsule has to actually overlap the volume. A UI high on a wall with a
+  small trigger is missed, and a layer matrix mistake fails silently.
+
+### What actually gets disabled
+
+The `Canvas`, the raycaster and the **colliders** — **not** `SetActive(false)`.
+
+- Disabling `Canvas` stops rendering immediately while keeping the hierarchy alive.
+- Disabling the **colliders** is what stops VRChat's pointer. This one is not optional:
+  see below.
+- Disabling the `GraphicRaycaster` takes the UI out of Unity's UI event resolution.
+- `SetActive(false)` would force a full layout rebuild on the way back and re-run every
+  `OnEnable`, Udon included, which can reset the state of unrelated scripts.
+
+### Why the colliders matter more than the raycaster
+
+VRChat's pointer does **not** go through the `GraphicRaycaster`. Its own raycaster does a
+**physics** raycast, then looks for a `VRC_UiShape` on whatever collider it hit:
+
+```csharp
+int hitCount = Physics.RaycastNonAlloc(...);              // hits COLLIDERS
+VRC_UiShape shape = hitObject.GetComponent<VRC_UiShape>();
+```
+
+So disabling the `Canvas` alone hides the UI while leaving its collider in place. The
+pointer keeps snapping to it, and **its buttons stay clickable** — an invisible UI that
+still reacts. That is a functional bug, not a cosmetic one.
+
+The scan fills the **Colliders** list automatically from the canvas GameObject. If a UI
+has colliders elsewhere, add them by hand; the target inspector warns when it finds
+colliders that are not listed.
+
+> `Collider` does not derive from `Behaviour` — it derives straight from `Component` with
+> its own `enabled` property. That is why colliders have their own list instead of sitting
+> in **Extra components**.
+
+### Line of sight
+
+When enabled, a UI already within range is hidden if an obstacle blocks the view. One
+`Physics.Linecast` per checked UI, cast from the player's head — casting from the feet
+would graze the floor and catch every bump.
+
+It runs **only** for UIs that already passed the distance test, so a UI two hundred
+metres away never costs a ray. Still, leave it off unless the world genuinely needs it.
+
+### Staggering
+
+Targets are checked round-robin, **Checks per frame** at a time. With 4 checks and 40
+UIs the worst-case latency is 10 frames — under a fifth of a second, invisible for a UI
+appearing at a distance.
+
+The first frame is an exception: everything is evaluated at once, otherwise distant UIs
+would stay lit until the cursor completed a full lap.
+
+Visibility is only written when it **changes**, so a stable scene performs zero component
+writes.
+
+---
+
+## Notes and limits
+
+- **One manager per scene.** Several managers would fight over the same canvases; the
+  inspector reports it as an error.
+- **Nested canvases are skipped.** Disabling the root canvas already stops its children
+  from rendering, so managing one target per level would only clutter the list.
+- **Screen Space canvases are skipped** by default: they are not displayed to anyone in
+  a VRChat world.
+- **UIs created at runtime** are not picked up automatically. Fill `targets` and call
+  `RefreshTargets()`.
+- `ShowAll()` turns everything back on for debugging without removing the manager.
+
+
+# FOS Mirror 1.0.0
+
+Switches mirrors on and off — by distance, by button, by interaction — from a single
+central manager, with quality presets and an indicative cost estimate.
+Requires **FOS Essentials Core 1.0.0**.
+
+Mirrors are the first thing that kills the frame rate of a VRChat world. This pack does
+not make them cheap: nothing can. It makes them **controlled** — off by default, on only
+where and when someone actually asked for one.
+
+---
+
+## Setup
+
+1. Create an empty GameObject and add **FOS Essentials > Mirror > Mirror Manager**.
+2. Click **Scan the scene**. Every VRChat mirror gets a `FOSMirrorTarget`, its mirror
+   component and its manager are wired up, and the manager's list is filled.
+3. Decide the **Mode**: exclusive, or every mirror independent.
+4. Add a control where a player should be able to switch a mirror:
+   **Mirror Control (UI Button)** or **Mirror Control (Interact)**.
+
+Re-run the scan after adding new mirrors. Existing targets are never overwritten, so any
+manual tuning survives.
+
+---
+
+## Components
+
+| Component | Role |
+|---|---|
+| `FOSMirrorManager` | One per scene. Owns the loop, the distance test and exclusive mode. |
+| `FOSMirrorTarget` | One per mirror. Holds settings and the on/off state — **no** per-frame work. |
+| `FOSMirrorButton` | Switches a mirror from a UI `Button`. Wires the `OnClick` for you. |
+| `FOSMirrorInteract` | Switches a mirror when a player uses the object it sits on. |
+
+The pack deliberately declares **no** custom editor for `VRC_MirrorReflection`. Unity
+accepts only one per type, and VRWorldToolkit already ships one. Everything here goes
+through the FOS component, so both tools keep working side by side.
+
+---
+
+## What is actually switched
+
+The `VRC_MirrorReflection` **component**, through `.enabled` — never the GameObject.
+
+`SetActive(false)` would re-run every `OnEnable` in the hierarchy, Udon included, which
+can reset the state of unrelated scripts. It would also hide the mirror object itself,
+and a mirror is usually a decorated frame that should stay visible when it goes dark.
+
+**Extra components** and **Extra colliders** are switched along with it.
+
+> `Collider` does not derive from `Behaviour` — it derives straight from `Component` with
+> its own `enabled` property. That is why colliders have their own list.
+
+Never put the collider a player uses to switch a mirror **back on** into that list: it
+would be disabled together with the mirror and the mirror could never be turned on again.
+The target inspector reports it as an error when it detects the case.
+
+---
+
+## What an off mirror looks like
+
+Disabling the mirror component stops the reflection, but the **surface keeps rendering** —
+and a mirror shader with nothing to reflect draws pure black. A switched-off mirror is
+therefore a black rectangle unless you say otherwise.
+
+Two fields on the target decide the look:
+
+| Mirror surface | Off material | Result |
+|---|---|---|
+| empty | — | The black rectangle. Nothing is touched. |
+| set | empty | The surface is **hidden**. Its draw call goes away too. |
+| set | set | The surface **swaps** to that material: dark glass, frosted pane, painted panel. |
+
+The scan fills **Mirror surface** with the renderer sitting on the mirror, so hiding is the
+default behaviour. Re-run the scan on an older scene to pick it up, or use the
+**Use the mirror's renderer** button in the target inspector.
+
+The pack ships one ready-made off material, `Materials/FOSMirrorOff.mat` — a dark, glossy
+pane. It uses Unity's **Standard** shader, chosen so the material never depends on
+anything outside Unity itself. On Quest, either swap its shader for a mobile one such as
+`VRChat/Mobile/Standard Lite`, or simply leave **Off material** empty: hiding the surface
+costs nothing and needs no material at all.
+
+The swap writes `renderer.material`, never `sharedMaterial` — writing `sharedMaterial` at
+runtime edits the material **asset** on disk, which in ClientSim would leave the mirror
+material permanently overwritten in your project.
+
+> `Renderer` derives from `Component`, not from `Behaviour`, and carries its own `enabled`
+> property — the same reason colliders get their own list.
+
+The "on" material is captured from the renderer when the world starts. Do not leave the
+off material assigned to the renderer in the scene: it would be captured as the mirror
+look and the reflection would never come back. The inspector reports that case as an
+error.
+
+This applies to distance culling too, which is usually what you want: a mirror out of
+range loses both its reflection and its surface.
+
+---
+
+## The two halves of a mirror's state
+
+A mirror renders only when **both** are true:
+
+| Half | Owner | Set by |
+|---|---|---|
+| **Manual state** — does anyone want it on? | The target | Button, interaction, `startsOn` |
+| **Range** — is the player close enough? | The manager | Distance test, every frame budget |
+
+A mirror the player switched off stays off, however close they walk. Range never turns a
+mirror on by itself — it only lets one that is already on come back.
+
+### Distance
+
+Same logic as FOS UI Culling: squared distances, two thresholds, round-robin checks,
+and a write only when the state actually changes.
+
+| Option | Effect |
+|---|---|
+| **Default distance** | Metres below which a mirror may render, unless the target overrides it. |
+| **Show distance** (target) | Per-mirror override. `-1` means "inherit the manager's default". |
+| **Distance reference** (target) | Point the distance is measured from. Empty means the mirror itself. |
+| **Hysteresis** | Extra metres before switching off again. |
+| **Checks per frame** | How many mirrors are tested each frame. 2 by default. |
+
+The target inspector spells out the result — *"Effective distance: 12 m (inherited from
+the manager)"* — so you never have to remember what `-1` means.
+
+Distances are read **once at `Start`**. Changing one at runtime requires calling
+`RefreshTargets()` on the manager.
+
+A mirror the player just switched on is measured immediately instead of waiting for its
+turn in the round-robin: standing right in front of a mirror that takes four frames to
+appear feels broken.
+
+---
+
+## Modes
+
+| Mode | Behaviour |
+|---|---|
+| **Free** | Every mirror is independent. Nothing stops a player from turning them all on. |
+| **Exclusive** | Turning one on turns every other one off. |
+
+Exclusive mode is the single most effective setting in this pack, because the second cost
+factor of a world is **how many mirrors render at the same time** — and that number is
+otherwise decided by whoever is feeling curious.
+
+It is enforced at startup too: if several mirrors are set to start on, only the first one
+does, and the manager inspector says so.
+
+---
+
+## Toggle scope, per mirror
+
+| Scope | Networking | Who pays |
+|---|---|---|
+| **Local** | None at all | Only the player who switched it |
+| **Synchronized** | `[UdonSynced]`, manual sync | Everyone in the instance |
+
+**Local** is the default, and it is the right one for a public mirror: a player who wants
+to check their avatar gets one, and nobody else pays for it.
+
+**Synchronized** is for a mirror that is part of the world — a dance stage, a shared
+dressing room. Ownership is taken before the variable is written, and the state is
+rebuilt for players who join later from `OnDeserialization`.
+
+> A `SendCustomNetworkEvent` is **not** replayed for late joiners. That is why the state
+> lives in a synced variable and not in an event.
+
+Because the state is stored on the target, the two scopes mix freely in one scene. In
+exclusive mode, be aware of what mixing means: switching a **local** mirror off only
+switches it off for you.
+
+Manual sync is rate-limited to roughly one serialisation per second per behaviour. Turning
+on a synchronized mirror in exclusive mode writes to the other synchronized mirrors as
+well, so avoid making a dozen mirrors synchronized when only one of them needs to be.
+
+---
+
+## Quality
+
+Two settings of the VRChat mirror are exposed on the target: **reflected layers** and
+**disable pixel lights**.
+
+| Preset | Reflected layers |
+|---|---|
+| **Untouched** *(default)* | Nothing is applied; the mirror keeps its own settings. |
+| **Players only** | Player + MirrorReflection — avatars over the skybox. |
+| **Players and world** | Default + Player + Environment + MirrorReflection. |
+| **World only** | Default + Environment. No avatar is ever drawn twice. |
+| **Nothing** | An empty mask. The mirror renders a blank reflection. |
+| **Custom** | Whatever you set by hand in **Reflected layers**. |
+
+The preset resolves into the **Reflected layers** field as soon as you pick it, so the
+mask you see is the mask that will be applied. The manager writes it into the mirror at
+`Start`; the target inspector also has **Apply to the mirror now** to write it in the
+editor, which is handy when you want VRWorldToolkit's own checks to see it.
+
+`Untouched` exists because a tool must never silently overwrite settings someone tuned by
+hand. Nothing is written until you choose a preset.
+
+The inspector warns about the classic mistakes: the untouched default mask, `UiMenu`
+being reflected, `PlayerLocal` being reflected, and players reflected without the
+`MirrorReflection` layer, which means players see each other but not themselves.
+
+---
+
+## The cost estimate
+
+The target and manager inspectors show an **indicative** score out of 100. It is a
+weighted estimate, not a measurement, and it is built in this order:
+
+1. **Reflected layers**, dominant. A mirror draws the scene a second time — twice in VR.
+   What it costs is therefore *what it draws again*. Reflecting avatars doubles the
+   heaviest item of a populated instance, and that item grows with the number of players,
+   not with the world. A world-only mirror costs a fraction of the same mirror reflecting
+   players, at identical size and position.
+
+2. **How many mirrors can render at the same time**. Two mirrors on means two extra
+   render passes; nothing is shared between them. Exclusive mode removes this factor
+   outright, so the scene score uses the worst mirror instead of the sum.
+
+3. **Screen coverage**, last and lightly weighted. VRChat renders a mirror into a texture
+   sized by the headset resolution, not by the mirror: a big mirror does not mechanically
+   cost more than a small one. Size counts **indirectly** — a big mirror is visible from
+   further away, fills up with avatars more often and culls by distance less well.
+
+Use the score to compare two settings of the same world. It is not an absolute figure and
+it does not replace profiling.
+
+---
+
+## Gizmo
+
+Selecting a mirror draws its plane, an arrow along the **reflecting** face and a red
+cross over the back. A mirror is a flat object: nothing in the scene view tells a
+correctly placed one from a mirror that was rotated by 180°, and you normally find out in
+game, standing in front of a black rectangle.
+
+The normal is read from the **mesh**, not guessed from the transform, so it stays right
+whatever mesh the mirror uses.
+
+The gizmo lives in an editor script using `[DrawGizmo]`. It is deliberately **not** an
+`OnDrawGizmos` in the Udon behaviour: Udon never calls that method, and UdonSharp would
+still have to compile it — along with `Gizmos` and `Handles`, which are not exposed.
+
+---
+
+## Scripting
+
+Every public entry point takes no parameter, so any script can reach it with
+`SendCustomEvent`:
+
+| Call | On | Effect |
+|---|---|---|
+| `FOSRequestToggle()` | `FOSMirrorTarget` | Flips the mirror |
+| `FOSRequestOn()` / `FOSRequestOff()` | `FOSMirrorTarget` | Forces one state |
+| `TriggerMirror()` | `FOSMirrorButton` / `FOSMirrorInteract` | Runs the control's action |
+| `FOSTurnAllOff()` | `FOSMirrorManager` | Panic button: switches every mirror off |
+| `RefreshTargets()` | `FOSMirrorManager` | Rebuilds the caches after a scene change |
+
+The `OnClick` wiring a UI button needs is `SendCustomEvent("TriggerMirror")` on the
+control's UdonBehaviour. Getting that right by hand means aiming at the UdonBehaviour
+rather than the visible component and typing the event name without a typo — a typo
+raises no error, the button simply does nothing. The inspector wires it in one click and
+tells you whether it is already wired.
+
+---
+
+## Notes and limits
+
+- **One manager per scene.** Several managers would fight over the same mirrors; the
+  inspector reports it as an error.
+- **Legacy mirrors are skipped.** Only the SDK3 mirror component is exposed to Udon.
+  The scan counts them and tells you.
+- **Mirrors created at runtime** are not picked up automatically. Fill `targets` and call
+  `RefreshTargets()`.
+- **A mirror with no manager cannot be switched.** The scan assigns it; the target
+  inspector says so when it is missing.
+- Quest and PC behave identically here — there is no platform-specific code, and there
+  could not be: Udon is compiled once for both.
+
+
+# FOS Localization 1.0.0
+
+Translates the text and the images of a VRChat world into as many languages as you
+want, edited in a real table instead of two disconnected arrays, with CSV round-trip
+for translators and the player's choice remembered between visits.
+Requires **FOS Essentials Core 1.0.0**.
+
+---
+
+## Setup
+
+1. Create an empty GameObject and add
+   **Add Component > FOS Essentials > Localization > Locale Manager**.
+2. Fill **Language codes** (`en`, `fr`, `es`, `de`) and **Language names**
+   (`English`, `Français`, `Español`, `Deutsch`). The first one is the pivot every other
+   language falls back to, so put the language you write the world in first.
+3. Open **FOS Essentials > FOS Localization > Translation Table** and add your keys.
+4. On every text of your interface, add
+   **Add Component > FOS Essentials > Localization > Localized Text**, point it at the
+   manager and give it its key.
+5. For the language switcher, add **Language Button** to each button, one per language.
+   Its inspector wires the `OnClick` for you.
+
+---
+
+## Components
+
+| Component | Role |
+|---|---|
+| `FOSLocaleManager` | One per world. Holds the languages, the table and the current language. |
+| `FOSLocalizedText` | Binds a key to a `TMP_Text` or a legacy `Text`. |
+| `FOSLocalizedImage` | Swaps a sprite per language. |
+| `FOSLanguageButton` | Switches the world to one language, with an optional selected/unselected highlight. |
+
+Everything here is **local**. No synced variable, no network traffic, no ownership.
+Two players standing next to each other have no reason to read the same language, and
+synchronising the choice would mean one of them loses it every time the other clicks.
+
+---
+
+## The translation table
+
+`FOS Essentials > FOS Localization > Translation Table`, or the button in the manager's
+inspector. One row per key, one column per language, and the empty cells are coloured
+so a gap is visible instead of having to be looked for.
+
+| Colour | Meaning |
+|---|---|
+| Red | The **first** language is empty. Nothing to fall back on: the world will show `#key`. |
+| Amber | Another language is empty. The world falls back to the first language. |
+
+The first declared language is the **pivot**: it is what every other language falls
+back to. Put the language you actually write the world in first.
+
+The toolbar filters by text — the search looks inside the translations too, so a
+sentence spotted in game is enough to find its key — and **Untranslated only** narrows
+the table down to the rows that still need work.
+
+### Why the table is not in the inspector
+
+The keys and the translations are stored as two arrays, and they are hidden from the
+inspector on purpose. The grid is flat: translation *j* of key *i* lives at
+`i × languages + j`. A key added by hand in the array, without its row of cells, shifts
+every text after it by one — with no error, nothing visible on screen, and no way to
+reconstruct the original. The window is therefore the only write path, and it keeps the
+two arrays in step.
+
+Adding or removing a **language** in the inspector is fine: the manager reports the
+mismatch and repairs the grid, moving every translation to its new position.
+
+---
+
+## CSV
+
+**Export CSV** writes the whole table, one row per key, one column per language, with
+the language codes as headers. **Import CSV** reads it back.
+
+The import is a **merge**, never a replacement:
+
+- A key present in the file but not in the table is **added**.
+- A key in the table but absent from the file is **left alone**.
+- A column whose header matches no declared language is **ignored** — a comments column
+  costs nothing.
+- An **empty cell never overwrites** an existing translation.
+
+So a single language can be sent out for review and merged back without any risk to the
+others, and a translator who returns a half-finished column destroys nothing.
+
+The file is written as UTF-8 **with** a BOM. Without it Excel opens the file in the local
+code page and mangles every accent, which is the single most common way a translation
+round-trip goes wrong.
+
+---
+
+## Keys
+
+A key is an identifier, not a sentence: `menu.title`, `rules.adult.warning`,
+`teleport.button.spawn`. Prefix by area so that a family stays together once the table
+is sorted — the **Sort** button orders keys alphabetically, taking their translations
+with them, and that is what makes a missing member of a family visible.
+
+A missing key shows as `#the.key` in game. That is deliberate: a translation hole has to
+be noticed, and a blank label never is.
+
+Line breaks are written `\n` in the table. An inspector field cannot take a real line
+break, and a CSV round-trip would not survive one.
+
+---
+
+## The player's language
+
+VRChat **does not tell a world which language a player's client is in**. There is no API
+for it, so no tool can detect it — this one included. A player arrives in the default
+language and switches by hand.
+
+What can be done is remembering their choice. With **Remember the choice** on, the
+language is written to VRChat `PlayerData` and restored on the next visit to this world.
+
+- Nothing leaves the world, and nothing is shared with other players.
+- The choice is stored under the language **code**, never its index, so reordering or
+  inserting a language does not silently move everyone somewhere else.
+- A language removed from the world since a player's last visit leaves them on the
+  default one instead of on nothing.
+
+`PlayerData` is not readable at `Start`. The default language is applied straight away
+and the saved one replaces it on `OnPlayerRestored`, which is why a returning player may
+see one frame of the default language.
+
+---
+
+## Cost
+
+The lookup is resolved **once**, at `Start`: each `FOSLocalizedText` remembers the index
+of its key and never searches again. A language switch is then one indexed read per
+text.
+
+Searching by name on every switch — which is the obvious way to write this — costs
+*texts × keys* string comparisons each time somebody clicks a flag. On a tablet UI with
+a hundred labels and two hundred keys, that is twenty thousand string comparisons per
+click, in Udon.
+
+Components register themselves with the manager, so there is no list to fill by hand and
+nothing to update when a page gains a label.
+
+---
+
+## Scripting
+
+| Call | On | Effect |
+|---|---|---|
+| `FOSSetLanguage(int)` | `FOSLocaleManager` | Switches language and saves the choice |
+| `FOSCurrentLanguage()` | `FOSLocaleManager` | Index of the language being displayed |
+| `FOSIndexOfLanguage(string)` | `FOSLocaleManager` | Index of a language code, `-1` if unknown |
+| `FOSIndexOfKey(string)` | `FOSLocaleManager` | Index of a key, `-1` if unknown. Call it once |
+| `FOSTextAt(int)` | `FOSLocaleManager` | Translation of an already-resolved key |
+| `FOSText(string)` | `FOSLocaleManager` | Translation of a key, lookup included |
+| `FOSRegister(UdonSharpBehaviour)` | `FOSLocaleManager` | Follow language changes |
+| `SelectLanguage()` | `FOSLanguageButton` | The control's action |
+
+Any `UdonSharpBehaviour` can call `FOSRegister(this)` and expose a public
+`FOSApplyLanguage()` — it will then be notified on every switch, exactly like the
+components shipped here. That is the extension point for anything this pack does not
+cover: an audio source per language, a video player, a sign texture.
+
+---
+
+## Notes and limits
+
+- **One manager per world** is the intended setup. Several work, but each has its own
+  table and its own current language, and a player switching one does not switch the other.
+- **Texts created at runtime** are not picked up. Call `FOSRegister` on them yourself.
+- **The language is not synchronised**, by design. See above.
+- Quest and PC behave identically: there is no platform-specific code, and there could
+  not be — Udon is compiled once for both.
+
+
+# FOS Sync Doctor 1.2.0
+
+Audits the synchronised behaviours of your world for the mistakes that **never raise an
+error** — the ones you only discover when a player joins your instance and sees a
+different world from everyone else.
+
+Free. Requires **FOS Essentials Core 1.1.0**.
+
+Menu: `FOS Essentials > FOS Sync Doctor > Audit`.
+
+---
+
+## Nothing is added to your world
+
+This pack contains **editor code only**. No component, no prefab, no behaviour. It reads
+your scripts and the components in your scene, and reports; it never runs in game and
+costs nothing at runtime.
+
+That is also why it ships without a `Runtime` assembly or a `Prefabs` folder, unlike every
+other FOS pack: there would be nothing to put in them.
+
+---
+
+## What it checks
+
+### A sync mode that contradicts the script — error
+
+The mode a script declares is not what runs. What runs is the value stored on the
+UdonBehaviour **in your scene**, and the two drift apart the moment a component is
+replaced, duplicated or pasted back. Nothing warns you: the inspector goes on showing the
+declared mode.
+
+When manual sync ends up stored as continuous, the payload goes over the ~200 byte
+continuous cap, the encoder fails, VRChat retries it forever, and **nothing leaves the
+owner's machine any more**. Everything still works locally, so the world simply looks dead
+to everyone else — with no error to explain it.
+
+This is the one finding the window can repair. **Fix** puts the declared mode back; save
+the scene afterwards or the correction is lost.
+
+### Synchronised variables with no `OnDeserialization` — error
+
+The single most common late-joiner bug. The values arrive, and nothing applies them. For
+the player who joined, the world stays in its initial state — permanently.
+
+A field carrying `[FieldChangeCallback]` is **not** reported: the callback fires on
+deserialisation, so that pattern is already correct.
+
+### `RequestSerialization()` inside `Start()` — warning
+
+VRChat documents that a serialisation requested from `Start()` does not reach players who
+join later. Send it from an event, or from `OnPlayerJoined`.
+
+### Manual sync that never serialises — warning
+
+Manual sync sends nothing until you ask. Without a single `RequestSerialization()` the
+variables are, in practice, local.
+
+The Core's helpers count as a serialisation: a script calling `FOSSync()` or
+`FOSTakeOwnershipAndSync()` is not reported, since both request one on your behalf.
+
+### Serialising with no ownership check — warning
+
+Only the owner can serialise. Called by anyone else, `RequestSerialization()` silently
+does nothing — the most confusing failure in Udon, because everything looks fine locally.
+
+### Continuous sync carrying an array or a string — warning
+
+Continuous sync is capped at roughly 200 bytes per behaviour. A variable-length field goes
+over it without warning. Manual sync carries far more.
+
+### Several behaviours on one object, disagreeing on the mode — error
+
+VRChat applies **one sync mode per GameObject**. Put two Udon behaviours on the same
+object and the others inherit the mode that wins, whatever their own script declares — a
+display set to `NoVariableSync` sitting next to an authority set to `Manual` quietly
+degrades that authority.
+
+This is the cause behind the finding above. Without it you repair the stored mode, save,
+and it comes back at the next recompile, with nothing to say where it came back from.
+
+The fix is never a value to change: move the behaviour that synchronises onto its own
+GameObject.
+
+### No sync mode declared — note
+
+Without `[UdonBehaviourSyncMode]` the mode defaults to *Any* and stays changeable in the
+inspector, where it can be altered by accident.
+
+### A broadcast event acting on the local player — warning
+
+The one that costs the most time to understand. A network event sent to every client runs
+on every client, and `Networking.LocalPlayer` is a different player on each of them. A
+teleport meant for one person moves the whole instance.
+
+### Player events used without `isLocal` — warning
+
+`OnPlayerTriggerEnter` and its siblings fire on **every** client, for **every** player
+entering. Without the check, a stranger walking through your volume triggers the effect on
+your machine.
+
+### A network event whose name starts with `_` — warning
+
+VRChat refuses to run such an event remotely. The call leaves, nothing happens, and
+nothing is logged.
+
+---
+
+## Certain, and probable
+
+Findings come in two kinds, and the window never mixes them up.
+
+**Certain** findings are established by inspecting the compiled types: which fields carry
+`[UdonSynced]`, which sync mode is declared, whether `OnDeserialization` is overridden.
+These are facts.
+
+**Probable** findings are deduced from the **text** of your scripts, because the body of a
+method cannot be inspected any other way. *"This script never calls
+`RequestSerialization`"* is wrong if another script calls it for you. Those findings carry
+a **probable** tag and are worth a look rather than a blind fix.
+
+Comments and string literals are stripped before anything is searched, so a script
+explaining *"no ownership check here"* in a comment is not mistaken for one that performs
+the check.
+
+An audit tool that cannot tell you how much to trust it is not worth much.
+
+---
+
+## What it does not do
+
+- It reads your scripts, and one thing in your **scene**: the sync mode stored on each
+  component. Wiring is outside what it can see — a behaviour that is perfectly written but
+  pointed at the wrong object still looks fine to it.
+- It does not check **performance, lighting or Quest budgets**. VRWorldToolkit does that
+  well, and for free.
+- It changes nothing on its own. Every finding is a report, and the one **Fix** button —
+  on a contradictory sync mode — only acts when you click it.
+
+By default the FOS packs themselves are skipped — you are auditing your world, not this
+line. The toggle exists if you want to look.
+
+
+# FOS Access 1.0.0
+
+Answers one question — **does this player hold the key?** — and lets anything in your
+world ask it. Requires **FOS Essentials Core 1.0.0**.
+
+---
+
+## Components
+
+| Component | Role |
+|---|---|
+| `FOSAccessList` | Holds the sources and answers. One per list. |
+| `FOSAccessGate` | Shows or hides objects depending on that answer. One per filtered spot. |
+
+Menu: `Add Component > FOS Essentials > Access > ...`
+
+---
+
+## Setup
+
+1. Create an empty GameObject and add **FOS Essentials > Access > Access List**.
+2. Fill at least one source (see below).
+3. Point whatever needs the answer at that component — a `FOSAccessGate`, a door, your
+   own behaviour.
+
+Several independent lists — VIP, staff, event crew — means several `FOSAccessList`
+components, each on its own object. A list is a thing, not a category inside one
+component.
+
+---
+
+## The four sources
+
+They are **cumulative**: any single one granting access is enough.
+
+| Source | Changes without republishing | Answers instantly |
+|---|---|---|
+| **List in the inspector** | no | yes |
+| **Remote list** (URL) | yes | no — it is a download |
+| **VRChat product** | yes | no — it arrives with the purchase callback |
+| **Instance master** | — | yes |
+
+The common setup is the first two together: the two or three people you trust shipped
+with the world, plus a list you can edit afterwards without opening Unity again.
+
+### The remote list format
+
+One display name per line. Empty lines are ignored, and so are lines starting with `#`,
+which is how you annotate the file:
+
+```
+# staff
+Frankk Darko
+# guests for the January event
+Some Player
+```
+
+The `#` rule applies **only** to the remote list. In the inspector a name is a name — a
+display name is perfectly allowed to start with a hash.
+
+### Moving names between the two
+
+The inspector has **Import from a file** and **Export to a file**, and both use the format
+above. So an inspector list can be exported and hosted as is, and a file already online
+can be pulled back into the prefab. One name per line means one column, which is why
+there is no CSV here — nothing would separate.
+
+---
+
+## Loading, and why a "no" is not always a "no"
+
+While a remote list is downloading, the list cannot honestly answer. `FOSIsResolved()`
+tells you whether the answer is final:
+
+- a **yes** is always final — sources only ever add people, none can take back what
+  another granted, so someone already in the inspector list is in for good;
+- a **no** is final only once nothing is in flight.
+
+An interface that refuses should tell the two apart. *"You are not on the list"* and
+*"the list has not arrived yet"* are not fixed the same way — and a player who is told
+neither simply concludes the button is broken.
+
+---
+
+## Public API
+
+| Call | Answer |
+|---|---|
+| `FOSIsAllowed()` | Does the local player hold the key? |
+| `FOSIsResolved()` | Is that answer final? |
+| `FOSState()` | `StateLoading`, `StateReady` or `StateFailed` |
+| `FOSRegister(behaviour)` | Be sent `FOSApplyAccess` whenever the answer changes |
+
+A behaviour that registers must expose a public, parameterless `FOSApplyAccess()`.
+
+---
+
+## The gate
+
+`FOSAccessGate` sits **on** what it filters rather than listing it centrally: the rule
+lives where the object lives, you see it by selecting the object, and it follows the
+object if you move it.
+
+It never touches its own GameObject. That is not a nicety — an Udon behaviour on a
+disabled object stops running, so it would never receive the answer meant to switch it
+back on. It would stay dark until the world restarts, with no error and no explanation.
+Left with no explicit targets, it drives its **direct children** instead: put the gate on
+an empty object and park underneath it whatever should be filtered.
+
+---
+
+## What this is not
+
+**It tidies a world. It does not protect it.**
+
+The answer is computed on the player's own client, so a modified client can answer
+whatever it likes, and a remote list served over a public URL is readable by anyone.
+Udon offers nothing better — there is no server-side check to appeal to.
+
+Put nothing in a list but display names, and never let this decide anything you would
+mind a determined visitor reaching.
+
+---
+
+## Credits
+
+French Oasis Studio SAS — <contact@frenchoasis.studio>
+
+
+# FOS Tablet System — Standard 2.1.1
+
+A tablet players summon in front of them: teleport menu, local toggles, world rules, and
+a full moderation panel with roles, freeze, isolation, mute and a synchronised log.
+
+Requires **FOS Essentials Core 1.3.0**, **FOS Localization 1.0.0** and
+**FOS Teleport 1.0.0**.
+
+Upgrading from an earlier version? Read `CHANGELOG.md` first — a prefab you
+have modified does not carry over on its own.
+
+---
+
+## Editions
+
+This pack ships in editions, each in its own folder:
+
+```
+Assets/FOS/TabletSystem/
+└── Standard/     ← you are here
+```
+
+A future **Pro** edition sits next to this one as `Pro/`, with its own assembly and its
+own components. It **adds** components beside the Standard ones and talks to them through
+their public API — it never replaces a component on the prefab. Upgrading therefore never
+costs you the wiring you already did.
+
+---
+
+## Setup
+
+1. Drop **FOS Essentials > FOS Tablet System > Standard > FOSTabletSystem** into your scene.
+2. Assign the **isolation zone**: an empty Transform somewhere out of the way. Without it,
+   isolating a player does nothing.
+3. Assign the **player registry** field of the staff manager. `FOSPlayerRegistry` comes
+   from the Core and lives on its **own GameObject** — never on the staff manager itself.
+   VRChat applies one sync mode per object, and the registry declares `NoVariableSync`:
+   sitting on the same object, it would drag the staff manager's manual sync down with it.
+   The field is optional, but without it the player list allocates an array on every join
+   and leave.
+4. Fill the **restored values** on the staff manager to match your world's movement and
+   voice settings. They are what a player gets back when unfrozen or unmuted, and they
+   overwrite whatever they had.
+5. Fill your teleport destinations, your toggle groups and your rules.
+
+---
+
+## Components
+
+| Component | Role | Networking |
+|---|---|---|
+| `FOSTabletManager` | Summons, places and closes the tablet | none |
+| `FOSTabletCaller` | Recalls the tablet to a fixed stand | none |
+| `FOSTabletSettings` | Personal sliders, community settings, rules | manual |
+| `FOSTabletToggleGroup` | Objects switched on and off together | none |
+| `FOSTabletToggleButton` | Button driving one group | none |
+| `FOSTabletStaffManager` | Roles, freeze, isolation, mute, authority | manual |
+| `FOSTabletStaffRow` | One player's row in the staff panel | none |
+| `FOSTabletPermissions` | Per-role object visibility | none |
+| `FOSTabletPermissionRow` | One player's row in the role panel | none |
+| `FOSTabletLogManager` | Synchronised moderation log | manual |
+| `FOSTabletLogRow` | One log line | none |
+
+---
+
+## The security model
+
+This is the part worth reading before shipping a world with it.
+
+**The owner of the staff manager is the only authority.** Every moderation action is a
+request sent to that owner through Network Calling. The owner checks the *real* calling
+player with `NetworkCalling.CallingPlayer`, which cannot be spoofed, and only then writes.
+A modified client can send the request; it will be refused.
+
+**Synced variables carry state, never commands.** That is what makes late joiners safe: a
+player who arrives applies the current state instead of replaying stale actions. A
+`SendCustomNetworkEvent` is never replayed for them, which is exactly why the state does
+not live in events.
+
+**Ownership is restricted to staff.** If the owner leaves and VRChat drops the object on a
+visitor, the staff member with the lowest player id reclaims it — a deterministic rule, so
+one client acts, not all of them at once.
+
+**The first admin is the first player of the instance**, locked by display name. Trusting
+the master would be a hole: the master changes every time someone leaves, and the admin
+would eventually land on a stranger. The instance creator is recognised as admin too, and
+the founder can never be demoted — not by a moderator, not by another admin.
+
+**Checks in the row components are interface checks only.** They avoid sending a request
+that is going to be refused and stop a visitor clicking dead buttons. They are not a
+security barrier and do not pretend to be one.
+
+### What isolation is, and is not
+
+Isolation is a **temporary confinement inside the current instance**. A VRChat world
+cannot — and must not — enforce a persistent ban. Rejoining clears it, by design.
+
+An isolated player is teleported to the isolation zone and sent back every two seconds if
+they walk out of its radius. Respawning does not release them either.
+
+---
+
+## Roles
+
+| Role | Value | Can |
+|---|---|---|
+| Visitor | 0 | nothing |
+| VIP | 1 | nothing more; the role exists for the visibility rules |
+| Moderator | 2 | freeze, isolate, mute, set roles up to moderator |
+| Admin | 3 | all of it, plus promoting admins and the community settings |
+
+Equal ranks can act on each other — two moderators can neutralise one another. That is a
+deliberate choice for the moment one of them goes wrong.
+
+If the last admin leaves, the first moderator is promoted automatically. Without that
+succession, an instance loses moderation entirely until it is restarted.
+
+
+### Assigning a role
+
+Each row of the role panel carries four buttons — visitor, VIP, moderator, admin — and
+that is all a world with the four default roles needs.
+
+A world that defines **its own** roles needs something that does not grow with their
+number. `FOS Essentials > FOS Tablet System > Build role selector` adds one to a row:
+two arrows, a label, an apply button.
+
+It clones one of the role buttons already on that row, so the selector inherits your
+colours, your font and your dimensions rather than arriving with ours. Position the four
+objects it creates, and save.
+
+The arrows walk through **every** role; the apply button is what decides. That way a
+locked button says something precise — *not this role, to this person* — instead of
+reading as a breakage. It stays locked while the selection is the role the player already
+holds.
+
+The label comes from the role list, so it follows both your names and each player's
+language.
+
+### Instance memory
+
+Moderator and admin roles are remembered **for the current instance only**, by display
+name. A staff member who crashes and comes back to the same instance gets their role
+again.
+
+Nothing is stored between sessions or across instances. Different groups open instances of
+the same world, and permissions from one have no business leaking into another. VIP is not
+remembered, and isolation is deliberately not remembered either.
+
+---
+
+## Per-role visibility
+
+`FOSTabletPermissions` shows and hides objects according to the local player's role.
+
+Roles are **cumulative**: a role gets everything shown to the roles below it. An admin sees
+the visitor, VIP and moderator objects without you copying them into four lists — that
+copying was the most common configuration mistake and the most tedious to undo.
+
+The "hidden from" lists are **exceptions for one role**, applied last. An object that only
+appears in *hidden from moderator* is visible to everyone **except** moderators.
+
+**The two staff lists ask a capability, not a rank.** *Shown to moderators* means «to any
+role allowed to open the staff panel», *Shown to admins* «to any role allowed to edit the
+community settings». With the four default roles that is exactly the same thing. It stops
+mattering the day a world defines its own roles: a greeter sitting at level 2 would
+otherwise inherit the moderation panel from a rank comparison, without holding a single
+one of its powers.
+
+
+> This is presentation, not protection. Hiding an object does not stop anyone reaching it
+> another way.
+
+---
+
+## Toggles
+
+A `FOSTabletToggleGroup` holds a list of objects and **one** state, applied to all of them.
+A `FOSTabletToggleButton` points at a group — directly, not through a string key.
+
+Toggles are local on purpose. A comfort switch has no reason to be imposed on the rest of
+the instance, and synchronising it would spend bandwidth on something nobody asked for.
+
+Several buttons can drive the same group: they register with it and their indicators stay
+in agreement.
+
+---
+
+## Text and translations
+
+In-game text goes through **FOS Localization**. Assign the locale manager and give the
+translation keys:
+
+| Where | Keys |
+|---|---|
+| `FOSTabletStaffManager` | four role names, in order: visitor, VIP, moderator, admin |
+| `FOSTabletSettings` | standard rules, adult rules |
+
+Without a locale manager, the fallback strings written next to those fields are used, and
+the tablet works in one language.
+
+Any label of your own is a `FOSLocalizedText` like anywhere else in your world.
+
+---
+
+## Teleporting
+
+Teleport buttons in the tablet are **FOS Teleport** components: one `FOSTeleportButton` per
+destination, with its target Transform. This pack does not ship its own teleporter.
+
+The one exception is **teleport to a player** in the staff panel: FOS Teleport aims at a
+fixed Transform in the scene, whereas that destination is a player who moves and may leave
+between the click and the arrival. It stays native here, and fails silently if the target
+is gone.
+
+---
+
+## Scripting
+
+Every entry point below takes no parameter, so any script can reach it with
+`SendCustomEvent`.
+
+| Call | On | Effect |
+|---|---|---|
+| `SummonTablet()` / `CloseTablet()` | `FOSTabletManager` | Opens or closes the tablet |
+| `RecallTablet()` | `FOSTabletCaller` | Brings the tablet back to its stand |
+| `FOSToggle()` | `FOSTabletToggleGroup` / `FOSTabletToggleButton` | Flips a group |
+| `FOSRoleOf(id)` / `FOSIsStaff(id)` / `FOSIsAdmin(id)` | `FOSTabletStaffManager` | Reads a role |
+| `FOSRequestFreeze/Isolation/Mute(id)` | `FOSTabletStaffManager` | Requests an action |
+| `FOSRequestRole(id, role)` | `FOSTabletStaffManager` | Requests a role change |
+| `FOSAdultContentIsOn()` | `FOSTabletSettings` | Reads the adult content state |
+
+### Extension points
+
+Three components publish state changes the same way. Call `FOSRegister(this)` on one, and
+expose a public parameterless method of the matching name:
+
+| Publisher | Event to expose |
+|---|---|
+| `FOSTabletStaffManager` | `FOSApplyStaffState()` |
+| `FOSTabletToggleGroup` | `FOSApplyToggleState()` |
+| `FOSLocaleManager` | `FOSApplyLanguage()` |
+
+A listener should also apply itself once in its own `Start`: it can register after the
+publisher has already set its initial state.
+
+This is how the Pro edition plugs in, and how anything this pack does not cover plugs in
+too.
+
+---
+
+## Notes and limits
+
+- **One staff manager per scene.** Several would fight over the same players.
+- **Nothing persists between sessions.** Roles live in the current instance only.
+- **Log size costs bandwidth.** Every entry is synchronised; 30 is a sensible default.
+- **Restored values overwrite the player's settings.** Match them to your world.
+- Quest and PC behave identically: there is no platform-specific code, and there could not
+  be — Udon is compiled once for both.
+
+
+# FOS Tablet System — Pro 1.0.0
+
+Turns the four fixed roles of the Standard edition into as many as your world needs, each
+with its own permissions.
+
+Requires **FOS Tablet System Standard 2.1.0** and **FOS Essentials Core 1.1.0**.
+
+Upgrading? Read `CHANGELOG.md` first.
+
+---
+
+## How it installs
+
+Pro **adds** components beside the Standard ones. It never replaces a component on your
+prefab, so upgrading costs you none of the wiring you already did.
+
+Drop the Pro package in next to Standard, and everything you had keeps working exactly as
+before until you open the role matrix and change something.
+
+---
+
+## The example
+
+`FOS Essentials > FOS Tablet System Pro > Create Example`
+
+Builds a working example in your open scene: five roles, two role gates with the objects
+they filter, and an arrival point per role. One `Ctrl+Z` removes all of it.
+
+It needs the Standard tablet in the scene first — it wires itself to your staff manager.
+
+### Why a generator and not a prefab
+
+Every Pro component points at the staff manager, which lives in the tablet instance **in
+your scene**. A prefab cannot hold a reference to a scene object: Unity clears it when the
+prefab is saved.
+
+An example shipped as a prefab would therefore arrive with every field empty, and the
+first thing you would do with this pack is debug a broken example. A generator produces
+one wired to *your* tablet instead, and stays useful afterwards for starting over.
+
+That is also why `Prefabs/` is empty here: there is nothing in this edition that a prefab
+could carry.
+
+### What to look at first
+
+The **Greeter** role. It teleports to newcomers and reads the log, but cannot punish
+anyone. A ladder of ranks has no way to express that role — it is the whole reason the
+matrix exists.
+
+---
+
+## The role matrix
+
+`FOS Essentials > FOS Tablet System Pro > Role Matrix`
+
+One row per role, one column per permission. Select the GameObject carrying your
+**Staff Manager**, or drop it in the field at the top.
+
+| Column | Meaning |
+|---|---|
+| **#** | The role's level. Higher outranks lower. |
+| **Name** | What players read, when no translation key is set. |
+| **Translation key** | Read from FOS Localization, so role names follow the player's language. |
+| **Grants up to** | The highest role this one may hand out. |
+| **Frz Iso Mut TP** | Freeze, isolate, mute, teleport to a player. |
+| **Rol** | May change roles at all. |
+| **Eq** | May act on someone of the same rank. |
+| **Com Pan Log** | Community settings, open the staff panel, view the log. |
+
+### Permissions are not a ladder
+
+That is the whole point of the matrix. A rank answers *who outranks whom*; it cannot say
+*this one mutes but never isolates*, which is the first thing a team of more than two
+people asks for.
+
+You can now build a greeter who only teleports, a chat moderator who mutes and nothing
+else, or a recruiter who hands out roles without being able to moderate anyone.
+
+### Ranks still matter
+
+Levels are not decoration: **Grants up to**, **act on an equal rank** and the founder
+protection all compare levels. Order your roles from least to most trusted.
+
+### Starting points
+
+**Reset** puts back the four original roles with the permissions the Standard edition
+applies. It is the sane starting point, and the way back if you get lost.
+
+**Back to rank-based** empties the matrix entirely. Permissions are then derived from rank
+again, exactly as Standard does it — Pro's other features keep working.
+
+---
+
+## What the window refuses to let pass
+
+Some settings are ticked in good faith and only show their consequence in a live instance,
+when it is too late.
+
+**A role that grants above itself.** It can create someone more powerful than itself, and
+rank stops meaning anything. Flagged in red.
+
+**A role that grants its own rank.** Its holders recruit peers without limit — normal for
+your top role, which is how an admin delegates, questionable for a middle one. Flagged as
+a warning, and only on roles that are not the highest.
+
+**Nobody can open the staff panel.** No moderation is possible at all.
+
+**Nobody can edit the community settings.** The rules and adult content switches stay
+locked for everyone, forever.
+
+**A role with no name.** Players see a number.
+
+---
+
+## Removing a role
+
+Every row carries a **×**. Any role can go, not just the last one.
+
+A role is an index, and that is the whole difficulty: every player's role, every gate,
+every *grants up to* refers to one by number. Removing role 2 slides 3 down to 2, 4 down
+to 3, and everything pointing above the gap would start naming its neighbour — the staff
+gate opening to greeters, the admin arrival point receiving moderators. Nothing would
+fail, nothing would show.
+
+So the window renumbers as it removes:
+
+| Renumbered in the matrix | Renumbered in the scene |
+|---|---|
+| Grant ceilings | Role gate masks |
+| Founder role, arrival role | Arrival points |
+| Account roles | |
+
+The confirmation counts what is about to move — how many accounts hold the role and
+which one they fall back to, how many gates and arrival points are rewritten — rather
+than asking whether you are sure.
+
+**One limit, and the dialog states it**: only the **open** scenes are renumbered. A gate
+sitting in another scene, or in a prefab never instantiated here, is invisible to the
+editor at that moment and keeps the old numbers. `Ctrl+Z` restores everything.
+
+---
+
+## Account roles
+
+`FOS Essentials > FOS Tablet System Pro > Account Roles`
+
+A list of display names and the role each one holds. Someone on that list arrives with
+their role already applied, in every instance, without anyone having to name them.
+
+### It is a floor, never a ceiling
+
+The role an account carries is the **lowest** it can hold:
+
+- They arrive with it, every time, and get it back after a crash or a rejoin.
+- They can be promoted **above** it for the duration of an instance.
+- They can be brought back **down to** it — that is how a temporary promotion is revoked.
+- They can **never** be pushed below it, by anyone, including an admin.
+
+That single rule covers permanent staff and one-evening helpers without a special case
+for either.
+
+### Two limits you have to know before using it
+
+**The list is baked into your world.** Adding or removing someone takes effect only after
+you upload again. There is no way around this: a role granted from inside the game would
+have to be stored somewhere trustworthy, and VRChat offers a world no such place. Player
+persistence is written by the player's own client — perfect for a language preference,
+catastrophic for a permission.
+
+**A rename loses the entry.** Udon exposes no account identifier, only the display name.
+A player who renames their VRChat account falls back to the arrival role until you update
+the list.
+
+The window states both, so nobody discovers them in production.
+
+### CSV
+
+**Export** writes name, role index and role name. The role name is redundant on purpose:
+without it, a file reopened six months later is a column of numbers.
+
+**Import replaces the whole list.** It does not merge, unlike the translation table, and
+the window asks before doing it. An access list is read as a whole — merging would
+silently keep someone you had removed from the file, which is exactly the mistake you
+cannot afford on permissions.
+
+A role can be written as its index or as its name; both are accepted on import.
+
+---
+
+## Special roles
+
+| Setting | What it does |
+|---|---|
+| **Founder role** | What the first player of the instance, and the instance creator, receive. |
+| **Role on arrival** | What everyone else gets. Visitor by default; a private world may want VIP. |
+
+The founder still cannot be demoted, whatever role you give them.
+
+---
+
+## Per-role visibility
+
+**Add Component > FOS Essentials > Tablet System Pro > Role Gate**
+
+Put it on the object you want to filter, tick the roles that may see it, done. The
+inspector lists the roles by name, not as a bit mask, and tells you in one sentence what
+the setting produces.
+
+**Shown to** the ticked roles, or **hidden from** them — one checkbox flips the meaning.
+
+### It never touches its own object
+
+This is the one thing to understand about where to put it.
+
+A behaviour on a disabled GameObject stops running. If the gate switched off its own
+object, it would never receive the role change meant to switch it back on: the object
+would stay dark until the world restarts, with no error and nothing to explain it.
+
+So the gate switches **its direct children** by default. Put it on an empty parent and
+drop what you want filtered underneath. You can also fill the **targets** list to drive
+objects anywhere else in the scene.
+
+### Two settings that do nothing
+
+The inspector flags them, because neither looks wrong in a column of checkboxes:
+
+- **Nothing ticked**, in *shown to* mode — the objects are hidden from everyone.
+- **Everything ticked**, in *shown to* mode — visible to everyone, so the gate is inert.
+
+> This arranges an interface, it does not protect anything. Hiding an object does not
+> stop a determined player from reaching it another way.
+
+---
+
+## Arrival points per role
+
+**Add Component > FOS Essentials > Tablet System Pro > Role Spawn**
+
+One arrival point per role: staff backstage, visitors at the entrance. The inspector
+draws one line per role, named, and follows the role matrix — add a role and its line
+appears here.
+
+An empty slot means *that role is not moved at all*, which is a legitimate choice, not an
+oversight.
+
+### It waits for the real role
+
+VRChat spawns a player before the synchronised list reaches them: on arrival, their own
+role is still unknown. The component waits until it is known rather than sending everyone
+to the arrival point and correcting itself a moment later — which would show up as a
+visible round trip every time a staff member connects.
+
+| Setting | Default | Why |
+|---|---|---|
+| **Spawn on arrival** | on | The point of the component. |
+| **Spawn on role change** | off | Being promoted should not yank someone across the map mid-conversation. |
+| **Keep velocity** | off | Arriving at full speed makes players slide or fall. |
+
+`FOSRespawn()` sends the local player back to their current role's point, for a
+"return to spawn" button of your own.
+
+---
+
+## Under the hood
+
+The matrix is **not synchronised**. It is baked into your prefab, identical on every
+client, so it costs nothing on the network and no client can forge it. What travels stays
+one integer of role per player — going from four roles to twenty costs nothing more.
+
+The permissions are read by the Standard edition's authority, at the same single decision
+point as before. Pro provides the data and the editor; it does not duplicate the security
+model, which is the last thing that should ever exist in two copies.
+
+---
+
+## Notes
+
+- Roles are edited **through the window only**. The arrays are bit masks: unreadable by
+  hand, and a one-bit mistake gives a role that isolates instead of freezing with nothing
+  to show for it.
+- Translation keys are optional. Without them, the names in the matrix are used as-is.
+- Quest and PC behave identically: there is no platform-specific code.
+
+
+# FOS Lock Door System — Standard 2.0.1
+
+A door players lock behind them: who is inside, do-not-disturb, anonymous mode, a
+doorbell with a camera view, and passages reserved to whoever holds the key.
+
+Requires **FOS Essentials Core 1.3.0**, **FOS Access 1.0.0**, **FOS Localization 1.0.0**,
+**FOS Teleport 1.0.0** and **FOS UI Culling 1.0.0** — all four free.
+
+Coming from version 1.0? **Read `CHANGELOG.md` first.** This release shares no class name
+with it, and a prefab you have modified does not carry over on its own.
+
+---
+
+## Editions
+
+```
+Assets/FOS/LockDoorSystem/
+└── Standard/     ← you are here
+```
+
+A **Pro** edition will sit next to this one, adding components beside the Standard ones
+and talking to them through their public API. It will never replace a component on the
+prefab, so upgrading will not cost you the wiring you already did.
+
+---
+
+## Setup
+
+1. Drop **FOS Essentials > FOS Lock Door System > Standard > Lock Door System** into your
+   scene.
+2. Resize **Detection Zone** to cover the room. Keep its Collider on **Is Trigger**, and
+   never disable the object — a disabled behaviour stops running and the room would look
+   empty for good. You can turn its Mesh Renderer off.
+3. Set the **room name** on the display. It overwrites what the texts hold in the scene,
+   so edit it there rather than on the canvas.
+4. For a reserved room: add an **Access List** (from FOS Access) somewhere in the scene,
+   fill it, and point the lock and the passages at it.
+5. Move the **teleport points** to suit the room.
+
+One Access List serves every door in the world. Do not give each door its own — they would
+each download the same list.
+
+---
+
+## Components
+
+| Component | Role | Sync |
+|---|---|---|
+| `FOSDoorLock` | Decides: locked, do-not-disturb, anonymous | Manual |
+| `FOSDoorOccupancy` | Holds who is in the room | Manual |
+| `FOSDoorBell` | The "someone is at the door" episode | Events only |
+| `FOSDoorDisplay` | Every text, icon and indicator | None |
+| `FOSDoorPortal` | A passage, optionally reserved | None |
+
+**Only `FOSDoorLock` decides anything.** Everything else reads it. That separation is what
+lets you add a second panel, a remote indicator or your own behaviour without touching
+the state: register with `FOSRegister`, expose a public parameterless method, and you are
+notified on every change.
+
+| Source | Event sent to those registered |
+|---|---|
+| `FOSDoorLock` | `FOSApplyDoorState`, and `FOSApplyDoorDenied` on a refusal |
+| `FOSDoorOccupancy` | `FOSApplyOccupancy` |
+| `FOSDoorBell` | `FOSApplyBell` |
+
+---
+
+## Coming from the 1.0 settings
+
+| 1.0 | 2.0 |
+|---|---|
+| **VIP Room** | `Locked on start` ticked **and** `Unlock when empty` unticked |
+| **Lock For All** | `Anyone can lock` |
+| **Delay Seconds** | `Display seconds`, on the doorbell |
+| **Anonym Length** | gone — the mask is a text you choose, the same for everyone |
+| **Room Name** | on the display |
+| `VIPChecker` | `FOSAccessList`, from the FOS Access pack |
+| `HideSystem` | FOS UI Culling |
+| `TeleportLDS` | `FOSDoorPortal`, on FOS Teleport |
+
+---
+
+## Translating the door
+
+The interface of the **editor** is already translated. The texts shown **in your world**
+are yours, and go in the FOS Localization table:
+
+| Key | Holds |
+|---|---|
+| `lockdoor.ring.who` | The ringing message. Must contain the `{player}` token. |
+| `lockdoor.list.empty` | Shown instead of the list when the room is empty. |
+| `lockdoor.denied.notAllowed` | Shown to somebody without the key. |
+| `lockdoor.denied.loading` | Shown while the access list has not arrived yet. |
+
+Leave the locale manager empty and the fallback texts written in the display are used as
+they are. The pack works without FOS Localization wired — it just speaks one language.
+
+---
+
+## How the network side works
+
+State travels **only** through synchronised variables. A click takes ownership, writes,
+serialises, and applies locally; every other client receives `OnDeserialization` and
+applies the same thing. Nothing is reconstructed from an event, so a player arriving late
+gets the whole state without anything being replayed for them.
+
+Requests go the other way: a client asks the owner, and the owner checks who is really
+calling before doing anything. Nobody can add, remove or ring on somebody else's behalf.
+
+The doorbell synchronises **nothing at all**. Ringing is an event, not a state.
+
+---
+
+## What this is not
+
+**The anonymous mode is cosmetic.** It hides names on the panel, identically for every
+player — but any client can already list everyone in the instance, so it keeps nothing
+secret from someone determined. It is a courtesy, not a protection.
+
+**Access is decided on the player's own client**, as everything in Udon is. A modified
+client can answer what it likes. This tidies a world; it does not guard it.
+
+Both limits are real, and neither has a fix available in Udon. Design your world knowing
+them rather than around them.
+
+---
+
+## Credits
+
+French Oasis Studio SAS — <contact@frenchoasis.studio>
+
