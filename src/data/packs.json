@@ -3,7 +3,7 @@
     "id": "core",
     "name": "FOS Essentials Core",
     "shortName": "Core",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "edition": "free",
     "price": null,
     "minimumCore": null,
@@ -162,20 +162,47 @@
     "vpmPublished": true
   },
   {
+    "id": "access",
+    "name": "FOS Access",
+    "shortName": "Access",
+    "version": "1.0.0",
+    "edition": "free",
+    "price": null,
+    "minimumCore": "1.0.0",
+    "requires": [],
+    "sourcePath": "Assets/FOS/Access",
+    "docsSlug": "packs/access",
+    "order": 6,
+    "description": {
+      "en": "Answers one question — does this player hold the key? A list in the inspector, a list downloaded from a URL, a VRChat product and the instance master, all cumulative, plus a gate that shows or hides objects accordingly.",
+      "fr": "Répond à une seule question : ce joueur a-t-il la clé ? Une liste dans l'inspecteur, une liste téléchargée depuis une URL, un produit VRChat et le master de l'instance, toutes cumulatives, plus un portique qui montre ou cache des objets en conséquence.",
+      "es": "Responde a una sola pregunta: ¿este jugador tiene la llave? Una lista en el inspector, una lista descargada desde una URL, un producto de VRChat y el master de la instancia, todas acumulativas, más una compuerta que muestra u oculta objetos en consecuencia.",
+      "de": "Beantwortet eine einzige Frage: Hat dieser Spieler den Schlüssel? Eine Liste im Inspector, eine über eine URL geladene Liste, ein VRChat-Produkt und der Master der Instanz, alle kumulativ, dazu ein Gate, das Objekte entsprechend ein- oder ausblendet."
+    },
+    "tagline": {
+      "en": "Reserve parts of a VRChat world to the right people",
+      "fr": "Réserver des parties d'un monde VRChat aux bonnes personnes",
+      "es": "Reservar partes de un mundo de VRChat a las personas adecuadas",
+      "de": "Teile einer VRChat-Welt den richtigen Leuten vorbehalten"
+    },
+    "vpmName": "studio.frenchoasis.access",
+    "vpmPublished": false
+  },
+  {
     "id": "tablet-system",
     "name": "FOS Tablet System — Standard",
     "shortName": "Tablet System",
     "version": "2.1.0",
     "edition": "paid",
     "price": null,
-    "minimumCore": "1.1.0",
+    "minimumCore": "1.3.0",
     "requires": [
       "localization",
       "teleport"
     ],
     "sourcePath": "Assets/FOS/TabletSystem/Standard",
     "docsSlug": "packs/tablet-system",
-    "order": 6,
+    "order": 7,
     "description": {
       "en": "A tablet players summon in front of them: teleport menu, local toggles, world rules, and a full moderation panel with roles, freeze, isolation, mute and a synchronised log.",
       "fr": "Une tablette que le joueur fait apparaître devant lui : menu de téléportation, interrupteurs locaux, règlement du monde, et un panneau de modération complet avec rôles, immobilisation, isolement, coupure micro et journal synchronisé.",
@@ -204,7 +231,7 @@
     ],
     "sourcePath": "Assets/FOS/TabletSystem/Pro",
     "docsSlug": "packs/tablet-system-pro",
-    "order": 7,
+    "order": 8,
     "description": {
       "en": "Turns the four fixed roles into as many as your world needs, each with its own permissions, plus per-account roles, per-role visibility and per-role spawn points.",
       "fr": "Transforme les quatre rôles figés en autant que votre monde en demande, chacun avec ses propres permissions, plus les rôles par compte, la visibilité par rôle et les points d'apparition par rôle.",
@@ -218,6 +245,38 @@
       "de": "Eigene Rollen und Rechte für die VRChat-Moderation"
     },
     "vpmName": "studio.frenchoasis.tabletsystem.pro",
+    "vpmPublished": false
+  },
+  {
+    "id": "lock-door-system",
+    "name": "FOS Lock Door System — Standard",
+    "shortName": "Lock Door System",
+    "version": "2.0.0",
+    "edition": "paid",
+    "price": null,
+    "minimumCore": "1.3.0",
+    "requires": [
+      "access",
+      "localization",
+      "teleport",
+      "ui-culling"
+    ],
+    "sourcePath": "Assets/FOS/LockDoorSystem/Standard",
+    "docsSlug": "packs/lock-door-system",
+    "order": 9,
+    "description": {
+      "en": "A door players lock behind them: who is inside, do-not-disturb, anonymous mode, a doorbell with a camera view, and passages reserved to whoever holds the key.",
+      "fr": "Une porte que les joueurs verrouillent derrière eux : qui est à l'intérieur, ne pas déranger, mode anonyme, sonnette avec vue caméra, et passages réservés à qui détient la clé.",
+      "es": "Una puerta que los jugadores cierran tras de sí: quién está dentro, no molestar, modo anónimo, timbre con vista de cámara y pasos reservados a quien tiene la llave.",
+      "de": "Eine Tür, die Spieler hinter sich abschließen: wer drinnen ist, Bitte nicht stören, anonymer Modus, Türklingel mit Kamerabild und Durchgänge nur für Schlüsselinhaber."
+    },
+    "tagline": {
+      "en": "Lockable rooms with a doorbell for VRChat worlds",
+      "fr": "Pièces verrouillables avec sonnette pour mondes VRChat",
+      "es": "Salas con cerradura y timbre para mundos de VRChat",
+      "de": "Abschließbare Räume mit Türklingel für VRChat-Welten"
+    },
+    "vpmName": "studio.frenchoasis.lockdoorsystem",
     "vpmPublished": false
   }
 ]

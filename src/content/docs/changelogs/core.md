@@ -24,6 +24,30 @@ Nothing yet.
 
 ---
 
+## [1.3.0] — 2026-08-20
+
+### Added
+
+- **Two more packs listed in the Hub**: `FOS Access` and `FOS Lock Door System`. While a
+  pack is not installed it shows under **Discover**, with a button opening its page; once
+  installed it moves to the list of your tools, like any other.
+- **`FOS Essentials > Check event wiring`** lists every UI control whose event matches no
+  existing method. Wiring a control to Udon means typing the event name by hand, and a
+  name matching nothing raises no error at all — the control is simply dead, silently.
+  It is also what a renamed method leaves behind, as many dead controls as it had callers.
+  It scans the selection, or the whole scene when nothing is selected, including inactive
+  objects — a closed panel holds exactly the kind of control one forgets to check. Not
+  only buttons: any persistent UnityEvent, so sliders and toggles are covered too.
+
+### Notes
+
+The catalogue is the one place in the line where packs are written out by hand — the
+registry only ever sees assemblies that are loaded, so a pack you do not own has nothing
+to declare. Adding a pack to the line therefore bumps the Core's minor version, and this
+release is the first to do it.
+
+---
+
 ## [1.2.0] — 2026-08-20
 
 ### Added
@@ -40,13 +64,10 @@ Nothing yet.
   in an assembly reference — invisible to the buyer, and unverifiable by the Hub.
 - The Hub reports every unmet requirement on a tool, telling a **missing** pack apart from
   one that is merely **too old**, and naming the version actually installed.
-
-### Fixed
-
-- **The Core no longer ships a 15 MB branding logo.** It was a 4096x4096 image drawn at
-  about 64 pixels in inspector headers. At 512x512 it looks the same and the pack is 58
-  times lighter, which matters now that the Core is installed and updated through the
-  Creator Companion by everyone using any FOS pack.
+- **The Hub shows the rest of the line**, with a **Discover** button opening that pack's
+  page. Until now the Hub could only list what was loaded, so somebody running the Core
+  and the free tools had no way of knowing the other packs existed. The section hides
+  itself entirely once everything is installed.
 
 ### Changed
 
@@ -55,13 +76,12 @@ Nothing yet.
 - Hub layout: **Links** now sits directly under **Environment**, before the prefabs and
   the tool list.
 
-- **The Hub shows the rest of the line**, with a **Discover** button opening that pack's
-  page. Until now the Hub could only list what was loaded, so somebody running the Core
-  and the free tools had no way of knowing the other packs existed. The section hides
-  itself entirely once everything is installed.
-
 ### Fixed
 
+- **The Core no longer ships a 15 MB branding logo.** It was a 4096x4096 image drawn at
+  about 64 pixels in inspector headers. At 512x512 it looks the same and the pack is 58
+  times lighter, which matters now that the Core is installed and updated through the
+  Creator Companion by everyone using any FOS pack.
 - The shop dropdown opened in the corner of the window instead of under its button. Its
   rectangle is now reserved before drawing rather than read back afterwards, which does
   not return the same thing during the click event as during the repaint.
@@ -186,6 +206,7 @@ First release.
   whatsoever.
 
 [Unreleased]: https://github.com/FrankkDarko/fos-essentials
+[1.3.0]: https://github.com/FrankkDarko/fos-essentials
 [1.2.0]: https://github.com/FrankkDarko/fos-essentials
 [1.1.1]: https://github.com/FrankkDarko/fos-essentials
 [1.1.0]: https://github.com/FrankkDarko/fos-essentials

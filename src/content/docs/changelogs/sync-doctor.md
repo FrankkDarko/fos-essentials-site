@@ -32,6 +32,11 @@ First release. Free. Requires **FOS Essentials Core 1.1.0**.
 
 **Audit window** — `FOS Essentials > FOS Sync Doctor > Audit`
 
+- A component whose **stored** sync mode contradicts the one its script declares. What
+  runs is the stored value, and the two drift apart when a component is replaced or
+  duplicated — while the inspector goes on showing the declared mode. Manual data stored
+  as continuous goes over the ~200 byte cap and the behaviour stops synchronising
+  entirely, with no message. The only finding the window can repair, on a **Fix** button.
 - Synchronised variables with no `OnDeserialization`, the most common late-joiner bug.
   A field carrying `[FieldChangeCallback]` is not reported: that pattern already works.
 - `RequestSerialization()` called from `Start()`, which VRChat documents as not reaching
@@ -74,8 +79,9 @@ First release. Free. Requires **FOS Essentials Core 1.1.0**.
 
 - Editor code only. No component, no prefab, no runtime cost, nothing added to the world.
   The pack therefore ships without a `Runtime` assembly or a `Prefabs` folder.
-- The audit reads scripts, not scenes. A correct behaviour wired to the wrong object is
-  outside what it can see.
+- The audit reads scripts, plus the sync mode stored on the components of the open
+  scene. Wiring stays outside what it can see: a correct behaviour pointed at the wrong
+  object still looks fine to it.
 
 [Unreleased]: https://github.com/FrankkDarko/fos-essentials
 [1.0.0]: https://github.com/FrankkDarko/fos-essentials

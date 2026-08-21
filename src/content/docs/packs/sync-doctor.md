@@ -23,7 +23,8 @@ Menu: `FOS Essentials > FOS Sync Doctor > Audit`.
 ## Nothing is added to your world
 
 This pack contains **editor code only**. No component, no prefab, no behaviour. It reads
-your scripts and reports; it never runs in game and costs nothing at runtime.
+your scripts and the components in your scene, and reports; it never runs in game and
+costs nothing at runtime.
 
 That is also why it ships without a `Runtime` assembly or a `Prefabs` folder, unlike every
 other FOS pack: there would be nothing to put in them.
@@ -31,6 +32,21 @@ other FOS pack: there would be nothing to put in them.
 ---
 
 ## What it checks
+
+### A sync mode that contradicts the script — error
+
+The mode a script declares is not what runs. What runs is the value stored on the
+UdonBehaviour **in your scene**, and the two drift apart the moment a component is
+replaced, duplicated or pasted back. Nothing warns you: the inspector goes on showing the
+declared mode.
+
+When manual sync ends up stored as continuous, the payload goes over the ~200 byte
+continuous cap, the encoder fails, VRChat retries it forever, and **nothing leaves the
+owner's machine any more**. Everything still works locally, so the world simply looks dead
+to everyone else — with no error to explain it.
+
+This is the one finding the window can repair. **Fix** puts the declared mode back; save
+the scene afterwards or the correction is lost.
 
 ### Synchronised variables with no `OnDeserialization` — error
 
@@ -107,11 +123,13 @@ An audit tool that cannot tell you how much to trust it is not worth much.
 
 ## What it does not do
 
-- It does not read your **scene**, only your scripts. A behaviour that is perfectly written
-  but wired to the wrong object is not something this tool can see.
+- It reads your scripts, and one thing in your **scene**: the sync mode stored on each
+  component. Wiring is outside what it can see — a behaviour that is perfectly written but
+  pointed at the wrong object still looks fine to it.
 - It does not check **performance, lighting or Quest budgets**. VRWorldToolkit does that
   well, and for free.
-- It does not touch anything. Every finding is a report; the fixes are yours to make.
+- It changes nothing on its own. Every finding is a report, and the one **Fix** button —
+  on a contradictory sync mode — only acts when you click it.
 
 By default the FOS packs themselves are skipped — you are auditing your world, not this
 line. The toggle exists if you want to look.
