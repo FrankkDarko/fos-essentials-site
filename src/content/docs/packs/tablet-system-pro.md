@@ -124,13 +124,29 @@ locked for everyone, forever.
 
 ## Removing a role
 
-Only the **last** one can be removed.
+Every row carries a **×**. Any role can go, not just the last one.
 
-A role is an index, and every player's role, every visibility rule and every "grants up
-to" refers to it by number. Removing one from the middle would renumber all the ones
-above it and silently shift everything that pointed at them.
+A role is an index, and that is the whole difficulty: every player's role, every gate,
+every *grants up to* refers to one by number. Removing role 2 slides 3 down to 2, 4 down
+to 3, and everything pointing above the gap would start naming its neighbour — the staff
+gate opening to greeters, the admin arrival point receiving moderators. Nothing would
+fail, nothing would show.
 
-To retire a role in the middle, empty its permissions and stop assigning it.
+So the window renumbers as it removes:
+
+| Renumbered in the matrix | Renumbered in the scene |
+|---|---|
+| Grant ceilings | Role gate masks |
+| Founder role, arrival role | Arrival points |
+| Account roles | |
+
+The confirmation counts what is about to move — how many accounts hold the role and
+which one they fall back to, how many gates and arrival points are rewritten — rather
+than asking whether you are sure.
+
+**One limit, and the dialog states it**: only the **open** scenes are renumbered. A gate
+sitting in another scene, or in a prefab never instantiated here, is invisible to the
+editor at that moment and keeps the old numbers. `Ctrl+Z` restores everything.
 
 ---
 

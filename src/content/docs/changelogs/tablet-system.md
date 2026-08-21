@@ -31,6 +31,12 @@ Groundwork for the **Pro** edition. On its own, Standard behaves exactly as it d
 
 ### Added
 
+- **A role selector on each row of the role panel** — two arrows, a label, an apply
+  button — for worlds that define more roles than the four built in. Three buttons
+  whatever the number of roles. `FOS Essentials > FOS Tablet System > Build role selector`
+  builds and wires it by cloning one of your existing role buttons, so it inherits your
+  colours and your font instead of arriving with ours. The four fixed buttons keep
+  working; leave the new fields empty and nothing changes.
 - **Permissions are a set of capabilities**, not just a rank: freeze, isolate, mute,
   teleport to a player, change roles, community settings, act on an equal rank, open the
   staff panel, view the log. Every moderation action — authority side and button side —
@@ -48,6 +54,13 @@ Groundwork for the **Pro** edition. On its own, Standard behaves exactly as it d
 
 ### Changed
 
+- The two staff visibility lists of `FOSTabletPermissions` ask a **capability** instead of
+  comparing ranks: *shown to moderators* means "may open the staff panel", *shown to
+  admins* means "may edit the community settings". Identical with the four default roles.
+  It stops being identical the day a world defines its own: a role sitting at level 2
+  would otherwise inherit the moderation panel from a rank comparison, without holding a
+  single one of its powers. `FOSIsStaff`, `FOSIsAdmin`, the staff counter, the instance
+  memory and the network authority handover follow the same rule now.
 - The rule deciding a role change lives in **one** place, `FOSCanSetRole`, asked by both
   the authority and the interface. It was written twice — once to decide, once to grey out
   a button — which is how two copies of a rule eventually stop agreeing.
@@ -61,6 +74,30 @@ Groundwork for the **Pro** edition. On its own, Standard behaves exactly as it d
   shares, instead of the pack's own copy. Same menu entry, same result. **This raises the
   Core this pack needs to 1.3.0**, where that checker lives — the Core also exposes it for
   the whole line under `FOS Essentials > Check event wiring`.
+
+### Fixed
+
+- **A role attached to a custom set could change by itself.** The automatic admin
+  succession compared ranks to the two original constants — admin is 3, moderator is 2.
+  In a world where admin sits at 4, it no longer saw the admin present, believed the
+  instance orphaned, took the first player at rank 2 and "promoted" them to rank 3.
+  Assigning a role therefore turned it into another one, silently, on every assignment
+  and every player leaving. The succession now asks who can still administer, and
+  promotes the highest-ranked player already trusted with roles to the lowest role that
+  can administer.
+- **The first player of an instance never received any state change.** Rebuilding the
+  player list did not go through the single point that notifies subscribers, and one
+  never receives one's own deserialisation — so for the instance creator, and for them
+  only, everything depending on the role stayed at its startup value.
+- **The instance memory no longer reserves its slots.** It filled 32 entries with empty
+  strings from the start, close to 400 of the 540 bytes of every serialisation, only to
+  express "nobody is remembered". It now grows one entry at a time and shrinks when a
+  role is forgotten; `memorySize` is a ceiling, not a size.
+- Every serialisation is preceded by a check on the nine synchronised arrays — nulls,
+  lengths out of step — repaired with a warning that names the array. VRChat retries a
+  failed serialisation forever without ever naming the variable at fault, which is the
+  kind of breakage that costs an evening to find.
+
 
 ### Notes
 

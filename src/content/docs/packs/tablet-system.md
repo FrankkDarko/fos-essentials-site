@@ -121,6 +121,28 @@ deliberate choice for the moment one of them goes wrong.
 If the last admin leaves, the first moderator is promoted automatically. Without that
 succession, an instance loses moderation entirely until it is restarted.
 
+
+### Assigning a role
+
+Each row of the role panel carries four buttons — visitor, VIP, moderator, admin — and
+that is all a world with the four default roles needs.
+
+A world that defines **its own** roles needs something that does not grow with their
+number. `FOS Essentials > FOS Tablet System > Build role selector` adds one to a row:
+two arrows, a label, an apply button.
+
+It clones one of the role buttons already on that row, so the selector inherits your
+colours, your font and your dimensions rather than arriving with ours. Position the four
+objects it creates, and save.
+
+The arrows walk through **every** role; the apply button is what decides. That way a
+locked button says something precise — *not this role, to this person* — instead of
+reading as a breakage. It stays locked while the selection is the role the player already
+holds.
+
+The label comes from the role list, so it follows both your names and each player's
+language.
+
 ### Instance memory
 
 Moderator and admin roles are remembered **for the current instance only**, by display
@@ -143,6 +165,14 @@ copying was the most common configuration mistake and the most tedious to undo.
 
 The "hidden from" lists are **exceptions for one role**, applied last. An object that only
 appears in *hidden from moderator* is visible to everyone **except** moderators.
+
+**The two staff lists ask a capability, not a rank.** *Shown to moderators* means «to any
+role allowed to open the staff panel», *Shown to admins* «to any role allowed to edit the
+community settings». With the four default roles that is exactly the same thing. It stops
+mattering the day a world defines its own roles: a greeter sitting at level 2 would
+otherwise inherit the moderation panel from a rank comparison, without holding a single
+one of its powers.
+
 
 > This is presentation, not protection. Hiding an object does not stop anyone reaching it
 > another way.

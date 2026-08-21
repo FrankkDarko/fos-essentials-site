@@ -50,6 +50,13 @@ as before until you open the role matrix and change something.
 - **Role spawn** — one arrival point per role. It waits for the real role rather than
   sending everyone to the arrival point and correcting itself, which would show as a
   visible round trip on every staff connection.
+- **Removing a role renumbers the world.** Any role can go, not just the last one. A role
+  is an index: removing role 2 slides 3 down to 2, and everything pointing above the gap
+  would start naming its neighbour — the staff gate opening to greeters, the admin
+  arrival point receiving moderators. Nothing would fail and nothing would show. So the
+  window rewrites the grant ceilings, the founder and arrival roles, the account list,
+  and every role gate and arrival point of the **open** scenes. What lives in another
+  scene, or in a prefab never instantiated, keeps the old numbers — the dialog says so.
 
 ### Guard rails
 
@@ -61,11 +68,9 @@ moment they are ticked; all of them only show their consequence in a live instan
   and only on roles that are not the highest, since that is exactly how a top role delegates.
 - No role able to open the staff panel: no moderation possible at all.
 - No role able to edit the community settings: rules and adult content locked for everyone.
-- Removing a role still held by accounts is **refused**, since those people would silently
-  fall back to the arrival role.
+- Removing a role tells you what it moves before it moves it: how many accounts hold it
+  and which role they fall back to, how many gates and arrival points are rewritten.
 - A role gate that shows to nobody, or to everybody, is pointed out.
-- Only the **last** role can be removed: a role is an index, and everything that refers to
-  one does so by number.
 
 ### Known limits
 
