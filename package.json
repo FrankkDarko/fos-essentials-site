@@ -12,7 +12,7 @@
     "og": "node scripts/gen-og.mjs",
     "vpm": "node scripts/build-vpm.mjs",
     "stats": "node scripts/stats.mjs",
-    "stats:open": "node scripts/stats.mjs && start dist-vpmstats.html"
+    "stats:open": "node scripts/stats.mjs --open"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.41.7",

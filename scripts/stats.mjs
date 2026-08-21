@@ -25,7 +25,7 @@
  * pas la machine.
  */
 
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -226,3 +226,9 @@ const outPath = join(OUT_DIR, 'stats.html');
 writeFileSync(outPath, html, 'utf8');
 console.log(`  panneau : ${outPath}`);
 console.log('');
+
+// L'ouverture se fait ici plutot que dans package.json : un chemin Windows
+// dans un script npm demande un echappement que la moindre relecture casse.
+if (process.argv.includes('--open')) {
+	spawn('cmd', ['/c', 'start', '', outPath], { detached: true, stdio: 'ignore' }).unref();
+}
