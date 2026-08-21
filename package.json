@@ -10,7 +10,8 @@
     "astro": "astro",
     "sync": "node scripts/sync-packs.mjs && node scripts/gen-og.mjs",
     "og": "node scripts/gen-og.mjs",
-    "vpm": "node scripts/build-vpm.mjs"
+    "vpm": "node scripts/build-vpm.mjs",
+    "stats": "node scripts/stats.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.41.7",
