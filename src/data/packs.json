@@ -138,7 +138,7 @@
     "id": "sync-doctor",
     "name": "FOS Sync Doctor",
     "shortName": "Sync Doctor",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "edition": "free",
     "price": null,
     "minimumCore": "1.1.0",

@@ -24,6 +24,35 @@ Nothing yet.
 
 ---
 
+## [1.2.0] — 2026-08-21
+
+### Added
+
+- **Several Udon behaviours on one GameObject that disagree on the sync mode.** VRChat
+  applies a single mode per object, so the others inherit it whatever their own script
+  declares — a display set to `NoVariableSync` next to an authority set to `Manual`
+  quietly degrades that authority, and the only sign is a discreet inspector warning.
+  This is the *cause* behind "the stored mode contradicts the script": without it you
+  repair the stored mode, save, and it returns at the next recompile with nothing to
+  explain why. Reported as an error when one of the behaviours carries synchronised
+  state, and it names every behaviour involved along with its declared mode.
+
+### Fixed
+
+- **A behaviour built on `FOSBehaviour` was reported as never serialising.** The audit
+  looked for `RequestSerialization()` by name, while the Core's `FOSSync()` and
+  `FOSTakeOwnershipAndSync()` call it on your behalf — so the recommended way of
+  serialising in this line was flagged as the mistake of not serialising at all. Both
+  now count, in that check and in the one watching for a serialisation requested from
+  `Start()`, which missed them for the same reason and stayed silent when it should
+  have warned.
+- **The Fix button appeared on findings it could not fix.** It showed on any finding
+  pointing at a component in the scene, while only one of them carries a mode to
+  reapply — clicking it elsewhere would have written the default mode, breaking the very
+  thing the button claims to repair. Only the contradictory sync mode offers it now.
+
+---
+
 ## [1.1.0] — 2026-08-21
 
 ### Added
@@ -92,5 +121,6 @@ First release. Free. Requires **FOS Essentials Core 1.1.0**.
   object still looks fine to it.
 
 [Unreleased]: https://github.com/FrankkDarko/fos-essentials
+[1.2.0]: https://github.com/FrankkDarko/fos-essentials
 [1.0.0]: https://github.com/FrankkDarko/fos-essentials
 

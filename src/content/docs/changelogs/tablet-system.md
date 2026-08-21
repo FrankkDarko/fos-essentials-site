@@ -24,6 +24,21 @@ Nothing yet.
 
 ---
 
+## [2.1.1] — 2026-08-21
+
+### Fixed
+
+- **The staff manager was not synchronising in manual mode, despite declaring it.** The
+  shipped prefab carried `FOSPlayerRegistry` on the same GameObject, and VRChat applies a
+  single sync mode per object: the registry declares `NoVariableSync`, and the staff
+  manager inherited it. Its nine synchronised arrays therefore travelled under a mode that
+  cannot carry them, with no message of any kind — the moderation state stayed on the
+  owner's machine while everything looked right in solo testing. The registry now sits on
+  its own child object, `Player Registry`, in the prefab and in the example scene. Nothing
+  to rewire: the field points at the component, which did not change.
+
+---
+
 ## [2.1.0] — 2026-08-20
 
 Groundwork for the **Pro** edition. On its own, Standard behaves exactly as it did in

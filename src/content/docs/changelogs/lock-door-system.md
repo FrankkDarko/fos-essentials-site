@@ -24,6 +24,20 @@ Nothing yet.
 
 ---
 
+## [2.0.1] — 2026-08-21
+
+### Fixed
+
+- **A door set to start locked appeared unlocked to everyone but its owner.** The
+  initial state was published from `Start()`, and VRChat documents that a
+  serialisation requested there can leave before networking is ready. Lost, it
+  reached nobody, and anyone joining afterwards received the default value — an
+  unlocked door. The first click on the door repaired it, which is what made this
+  hard to notice: the state was only ever wrong until somebody touched it. The
+  initial state is now published from `OnPlayerJoined`, where the network is up.
+
+---
+
 ## [2.0.0] — 2026-08-21
 
 Full rewrite on the **FOS Essentials Core**. The door does the same job as before, and

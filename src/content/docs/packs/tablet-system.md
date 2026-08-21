@@ -42,8 +42,12 @@ costs you the wiring you already did.
 1. Drop **FOS Essentials > FOS Tablet System > Standard > FOSTabletSystem** into your scene.
 2. Assign the **isolation zone**: an empty Transform somewhere out of the way. Without it,
    isolating a player does nothing.
-3. Assign the **player registry** (`FOSPlayerRegistry`, from the Core) on the staff manager.
-   It is optional, but without it the player list allocates an array on every join and leave.
+3. Assign the **player registry** field of the staff manager. `FOSPlayerRegistry` comes
+   from the Core and lives on its **own GameObject** — never on the staff manager itself.
+   VRChat applies one sync mode per object, and the registry declares `NoVariableSync`:
+   sitting on the same object, it would drag the staff manager's manual sync down with it.
+   The field is optional, but without it the player list allocates an array on every join
+   and leave.
 4. Fill the **restored values** on the staff manager to match your world's movement and
    voice settings. They are what a player gets back when unfrozen or unmuted, and they
    overwrite whatever they had.

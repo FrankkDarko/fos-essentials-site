@@ -71,13 +71,13 @@
           "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/teleport/",
           "vpmDependencies": {
             "com.vrchat.worlds": "3.10.4",
-            "studio.frenchoasis.core": "1.0.0"
+            "studio.frenchoasis.core": "1.2.0"
           },
           "legacyFolders": {
             "Assets/FOS/Teleport": ""
           },
-          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/teleport-v1.0.0/studio.frenchoasis.teleport-1.0.0.zip",
-          "zipSHA256": "3e66497392e621cbb71f515e6f63eba105ed86330c126e6003815f9a0814bf59"
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/teleport-v1.0.0-r2/studio.frenchoasis.teleport-1.0.0.zip",
+          "zipSHA256": "6d613d0638a598f7be1d6f6825f419e5064e7a4648c1c32449e48697ea4fe610"
         }
       }
     },
@@ -97,13 +97,13 @@
           "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/ui-culling/",
           "vpmDependencies": {
             "com.vrchat.worlds": "3.10.4",
-            "studio.frenchoasis.core": "1.0.0"
+            "studio.frenchoasis.core": "1.2.0"
           },
           "legacyFolders": {
             "Assets/FOS/UICulling": ""
           },
-          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/ui-culling-v1.0.0/studio.frenchoasis.uiculling-1.0.0.zip",
-          "zipSHA256": "2bb39bf7e415932ca9dc7087d5aaa647874f42152d864768ee907e4cc2c656aa"
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/ui-culling-v1.0.0-r2/studio.frenchoasis.uiculling-1.0.0.zip",
+          "zipSHA256": "2dc7370697e5a3cdfdde9cc3f9c960bc8afcd222f13e40c539f36f84e0a5cfdd"
         }
       }
     },
@@ -123,13 +123,13 @@
           "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/mirror/",
           "vpmDependencies": {
             "com.vrchat.worlds": "3.10.4",
-            "studio.frenchoasis.core": "1.0.0"
+            "studio.frenchoasis.core": "1.2.0"
           },
           "legacyFolders": {
             "Assets/FOS/Mirror": ""
           },
-          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/mirror-v1.0.0/studio.frenchoasis.mirror-1.0.0.zip",
-          "zipSHA256": "deee797a534c9ae99d61051ece84b4cb6a4d05be18c54a1d25afb8df7b412ea9"
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/mirror-v1.0.0-r2/studio.frenchoasis.mirror-1.0.0.zip",
+          "zipSHA256": "0c877dfaf9717b28156959f5ca7410638fdccd72540f93acbff4505561c33264"
         }
       }
     },
@@ -149,13 +149,13 @@
           "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/localization/",
           "vpmDependencies": {
             "com.vrchat.worlds": "3.10.4",
-            "studio.frenchoasis.core": "1.0.0"
+            "studio.frenchoasis.core": "1.2.0"
           },
           "legacyFolders": {
             "Assets/FOS/Localization": ""
           },
-          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/localization-v1.0.0/studio.frenchoasis.localization-1.0.0.zip",
-          "zipSHA256": "a50638aaca05f1f561b75cb8019a588b874362a28a76b2d4c394cc59c5570b65"
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/localization-v1.0.0-r2/studio.frenchoasis.localization-1.0.0.zip",
+          "zipSHA256": "5c760c565f805dd4aadcaac412d47b3d045eaef30aabd3ad453eeebbbb59f2c9"
         }
       }
     },
@@ -204,6 +204,28 @@
           },
           "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/sync-doctor-v1.1.0/studio.frenchoasis.syncdoctor-1.1.0.zip",
           "zipSHA256": "28d10f022d645784014137923e838502bfce3aefe302efabea7746f53da9ddf7"
+        },
+        "1.2.0": {
+          "name": "studio.frenchoasis.syncdoctor",
+          "displayName": "FOS Sync Doctor",
+          "version": "1.2.0",
+          "unity": "2022.3",
+          "description": "Audits the synchronised behaviours of a world for the mistakes that never raise an error: late joiners, ownership, and broadcast events acting on the local player.",
+          "author": {
+            "name": "French Oasis Studio",
+            "url": "https://frenchoasis.studio"
+          },
+          "documentationUrl": "https://essentials.frenchoasis.studio/packs/sync-doctor/",
+          "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/sync-doctor/",
+          "vpmDependencies": {
+            "com.vrchat.worlds": "3.10.4",
+            "studio.frenchoasis.core": "1.2.0"
+          },
+          "legacyFolders": {
+            "Assets/FOS/SyncDoctor": ""
+          },
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/sync-doctor-v1.2.0/studio.frenchoasis.syncdoctor-1.2.0.zip",
+          "zipSHA256": "8b0ae2a7af27cf2f99f9d972f9ba3d13f65ce0069f1fd39adf926f2cc2c83d21"
         }
       }
     },
@@ -223,13 +245,13 @@
           "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/access/",
           "vpmDependencies": {
             "com.vrchat.worlds": "3.10.4",
-            "studio.frenchoasis.core": "1.0.0"
+            "studio.frenchoasis.core": "1.2.0"
           },
           "legacyFolders": {
             "Assets/FOS/Access": ""
           },
-          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/access-v1.0.0/studio.frenchoasis.access-1.0.0.zip",
-          "zipSHA256": "af60b64dc3b471c84ae2f6f79e45c1e460f9b0e9bf9a51a9897afdc375ff67e4"
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/access-v1.0.0-r2/studio.frenchoasis.access-1.0.0.zip",
+          "zipSHA256": "d73d42f87c91dfaca72a5ee47151995ff7683cca5b7f43b00bea87a153d800a3"
         }
       }
     }

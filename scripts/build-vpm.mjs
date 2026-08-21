@@ -95,13 +95,73 @@ function walk(dir, base = dir, out = []) {
 	return out;
 }
 
+const listingPath = join(siteRoot, 'public/index.json');
+
+const previous = existsSync(listingPath)
+	? JSON.parse(readFileSync(listingPath, 'utf8'))
+	: { packages: {} };
+
+/**
+ * Republication exceptionnelle d'une version deja publiee.
+ *
+ * Normalement interdit : une version publiee est un contenu fige, et le
+ * Creator Companion refuse une installation dont le zipSHA256 ne correspond
+ * pas. La seule exception legitime est un paquet **impossible a installer**,
+ * qui n'a donc aucune base installee a proteger — le cas du 20/08/2026, ou
+ * tous les outils declaraient un Core absent du listing.
+ *
+ * La valeur sert de suffixe au tag de release : l'URL de telechargement change,
+ * ce qui evite le cache de GitHub, observe servant l'ancien fichier pendant une
+ * vingtaine de minutes apres remplacement d'un asset.
+ *
+ *   FOS_VPM_REPUBLISH=r2 npm run vpm
+ */
+const REPUBLISH = process.env.FOS_VPM_REPUBLISH ?? '';
+
+const CORE_NAME = 'studio.frenchoasis.core';
+
+/** Compare deux versions semver. Renvoie un nombre negatif si a < b. */
+function compareVersions(a, b) {
+	const pa = String(a).split('.').map(Number);
+	const pb = String(b).split('.').map(Number);
+	for (let i = 0; i < 3; i++) {
+		if ((pa[i] ?? 0) !== (pb[i] ?? 0)) return (pa[i] ?? 0) - (pb[i] ?? 0);
+	}
+	return 0;
+}
+
+/**
+ * Plus ancienne version du Core reellement presente dans le listing.
+ *
+ * Un pack declare un `minimumCore` historique — 1.0.0 pour la plupart — mais le
+ * listing VPM n'a jamais contenu cette version-la : la distribution a commence
+ * a 1.2.0. Le Creator Companion cherchait donc un paquet inexistant et refusait
+ * d'installer l'outil. La dependance est desormais relevee au plus ancien Core
+ * publie, ce qui reste vrai puisqu'une version plus recente satisfait un
+ * minimum plus ancien.
+ */
+const coreFloor = (() => {
+	const published = Object.keys(previous.packages?.[CORE_NAME]?.versions ?? {});
+	const building = packs.find((p) => p.id === 'core' && p.vpmPublished);
+	if (building) published.push(building.version);
+	if (published.length === 0) return null;
+	return published.sort(compareVersions)[0];
+})();
+
+/** La plus haute de deux versions, en tolerant une valeur absente. */
+function highestVersion(a, b) {
+	if (!a) return b;
+	if (!b) return a;
+	return compareVersions(a, b) >= 0 ? a : b;
+}
+
 /** Manifeste UPM du paquet, généré — jamais écrit à la main. */
 function manifest(pack, version) {
 	const dependencies = { 'com.vrchat.worlds': site.vrchatSdk };
 
 	// C'est ce champ qui rend le Core obligatoire côté Creator Companion.
 	if (pack.minimumCore) {
-		dependencies['studio.frenchoasis.core'] = pack.minimumCore;
+		dependencies[CORE_NAME] = highestVersion(pack.minimumCore, coreFloor);
 	}
 	for (const id of pack.requires ?? []) {
 		const dep = packs.find((p) => p.id === id);
@@ -187,13 +247,22 @@ for (const pack of publishable) {
 
 	const buffer = readFileSync(zipPath);
 	const sha256 = createHash('sha256').update(buffer).digest('hex');
-	const tag = `${pack.id}-v${version}`;
+	// Un paquet dont le contenu n'a pas bouge garde son tag : re-taguer sans
+	// raison changerait son URL dans le listing pour rien.
+	const priorSha =
+		previous.packages?.[pack.vpmName]?.versions?.[version]?.zipSHA256;
+	const replaced = Boolean(priorSha && priorSha !== sha256);
+	const tag =
+		replaced && REPUBLISH
+			? `${pack.id}-v${version}-${REPUBLISH}`
+			: `${pack.id}-v${version}`;
 
 	built.push({
 		pack,
 		version,
 		zipName,
 		sha256,
+		replaced,
 		files,
 		size: buffer.length,
 		url: `https://github.com/${REPO}/releases/download/${tag}/${zipName}`,
@@ -208,17 +277,11 @@ for (const pack of publishable) {
 
 // --- Listing servi au Creator Companion ------------------------------
 
-const listingPath = join(siteRoot, 'public/index.json');
-
 // Les versions deja publiees sont conservees. Un projet dont le
 // vpm-manifest.json verrouille une ancienne version ne peut plus la resoudre
 // si elle disparait du listing : le Creator Companion la declare introuvable
 // et le projet ne s'ouvre plus correctement. Un listing s'accumule, il ne se
 // remplace pas.
-const previous = existsSync(listingPath)
-	? JSON.parse(readFileSync(listingPath, 'utf8'))
-	: { packages: {} };
-
 const listing = {
 	name: 'FOS Essentials',
 	id: 'studio.frenchoasis.vpm',
@@ -237,7 +300,7 @@ for (const entry of built) {
 	// celui deja annonce, c'est qu'on a modifie un pack sans changer son
 	// numero : le Creator Companion refuserait l'installation sur une somme de
 	// controle, ou pire, servirait deux contenus sous un meme numero.
-	if (already && already.zipSHA256 !== entry.sha256) {
+	if (already && already.zipSHA256 !== entry.sha256 && !REPUBLISH) {
 		console.error(
 			`build-vpm: ${entry.pack.vpmName} ${entry.version} est deja publie avec ` +
 				`une autre empreinte.
@@ -278,8 +341,22 @@ writeFileSync(
 	'utf8'
 );
 
+if (REPUBLISH) {
+	console.warn(
+		`build-vpm: republication forcee (suffixe « ${REPUBLISH} ») — a reserver aux versions ` +
+			`impossibles a installer, jamais a une correction ordinaire.`
+	);
+}
+
 console.log(`build-vpm: public/index.json ecrit (${built.length} paquet(s))`);
+
+const toRelease = built.filter(
+	(e) => e.replaced || !previous.packages?.[e.pack.vpmName]?.versions?.[e.version]
+);
+if (toRelease.length === 0) {
+	console.log('build-vpm: rien de nouveau a publier, toutes les releases existent deja.');
+}
 console.log('build-vpm: zips dans dist-vpm/, a joindre aux releases GitHub :');
-for (const entry of built) {
+for (const entry of toRelease) {
 	console.log(`  gh release create ${entry.tag} "dist-vpm/${entry.zipName}"`);
 }
