@@ -120,53 +120,40 @@ const REPUBLISH = process.env.FOS_VPM_REPUBLISH ?? '';
 
 const CORE_NAME = 'studio.frenchoasis.core';
 
-/** Compare deux versions semver. Renvoie un nombre negatif si a < b. */
-function compareVersions(a, b) {
-	const pa = String(a).split('.').map(Number);
-	const pb = String(b).split('.').map(Number);
-	for (let i = 0; i < 3; i++) {
-		if ((pa[i] ?? 0) !== (pb[i] ?? 0)) return (pa[i] ?? 0) - (pb[i] ?? 0);
-	}
-	return 0;
-}
-
 /**
- * Plus ancienne version du Core reellement presente dans le listing.
+ * Plage de versions acceptee pour une dependance.
  *
- * Un pack declare un `minimumCore` historique — 1.0.0 pour la plupart — mais le
- * listing VPM n'a jamais contenu cette version-la : la distribution a commence
- * a 1.2.0. Le Creator Companion cherchait donc un paquet inexistant et refusait
- * d'installer l'outil. La dependance est desormais relevee au plus ancien Core
- * publie, ce qui reste vrai puisqu'une version plus recente satisfait un
- * minimum plus ancien.
+ * Une version ecrite seule — « 1.2.0 » — est un EPINGLAGE pour le Creator
+ * Companion : il installe exactement celle-la, et retrograde ce qui est deja
+ * present. Sync Doctor exigeait ainsi de repasser au Core 1.2.0 alors que le
+ * 1.3.0 deja installe lui convenait parfaitement.
+ *
+ * Le caret dit ce qu'on veut reellement exprimer : cette version, ou toute
+ * suivante qui reste compatible, sans franchir le majeur. C'est au passage la
+ * borne haute qui manque au Hub, dont IsCoreVersionSatisfied ne verifie qu'un
+ * minimum.
+ *
+ * Une plage supprime aussi le besoin de relever la dependance au plus ancien
+ * Core publie : « ^1.0.0 » se resout sur le 1.3.0 du listing, que 1.0.0 ait ete
+ * distribue ou non. Le plancher qui servait a cela, ajoute le 21/08/2026, est
+ * donc retire — il annoncait un minimum que le pack n'exige pas.
  */
-const coreFloor = (() => {
-	const published = Object.keys(previous.packages?.[CORE_NAME]?.versions ?? {});
-	const building = packs.find((p) => p.id === 'core' && p.vpmPublished);
-	if (building) published.push(building.version);
-	if (published.length === 0) return null;
-	return published.sort(compareVersions)[0];
-})();
-
-/** La plus haute de deux versions, en tolerant une valeur absente. */
-function highestVersion(a, b) {
-	if (!a) return b;
-	if (!b) return a;
-	return compareVersions(a, b) >= 0 ? a : b;
+function atLeast(version) {
+	return `^${version}`;
 }
 
 /** Manifeste UPM du paquet, généré — jamais écrit à la main. */
 function manifest(pack, version) {
-	const dependencies = { 'com.vrchat.worlds': site.vrchatSdk };
+	const dependencies = { 'com.vrchat.worlds': atLeast(site.vrchatSdk) };
 
 	// C'est ce champ qui rend le Core obligatoire côté Creator Companion.
 	if (pack.minimumCore) {
-		dependencies[CORE_NAME] = highestVersion(pack.minimumCore, coreFloor);
+		dependencies[CORE_NAME] = atLeast(pack.minimumCore);
 	}
 	for (const id of pack.requires ?? []) {
 		const dep = packs.find((p) => p.id === id);
 		if (dep?.vpmName && dep.vpmPublished) {
-			dependencies[dep.vpmName] = dep.version;
+			dependencies[dep.vpmName] = atLeast(dep.version);
 		} else if (dep) {
 			// Cas d'un pack gratuit dependant d'un pack payant, absent du
 			// listing : le signaler plutot que de produire un manifeste que le
