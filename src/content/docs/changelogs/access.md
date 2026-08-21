@@ -24,7 +24,7 @@ Nothing yet.
 
 ---
 
-## [1.0.0] — 2026-08-20
+## [1.0.0] — 2026-08-21
 
 First release. Requires **FOS Essentials Core 1.0.0**.
 

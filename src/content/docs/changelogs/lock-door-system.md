@@ -24,7 +24,7 @@ Nothing yet.
 
 ---
 
-## [2.0.0] — 2026-08-20
+## [2.0.0] — 2026-08-21
 
 Full rewrite on the **FOS Essentials Core**. The door does the same job as before, and
 none of it is the same code.
