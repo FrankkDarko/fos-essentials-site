@@ -24,6 +24,20 @@ Nothing yet.
 
 ---
 
+## [1.0.1] — 2026-08-22
+
+### Fixed
+
+- **The role matrix was not being saved.** Roles defined in the window came back as the
+  four original ranks, and a role gate offered those instead of yours. A component has two
+  halves — the one you edit in the inspector, and the one that runs — and the windows were
+  writing only the first. UdonSharp periodically copies the running half back over the
+  edited one, notably when leaving Play mode, and that copy erased the matrix. The same
+  applied to the account list and to the example generator. Reported by a customer, and
+  the report was exactly right.
+
+---
+
 ## [1.0.0] — 2026-08-20
 
 First release.

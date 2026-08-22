@@ -222,7 +222,7 @@
     "id": "tablet-system-pro",
     "name": "FOS Tablet System — Pro",
     "shortName": "Tablet System Pro",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "edition": "paid",
     "price": null,
     "minimumCore": "1.1.0",
