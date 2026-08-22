@@ -111,7 +111,7 @@
     "id": "localization",
     "name": "FOS Localization",
     "shortName": "Localization",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "edition": "free",
     "price": null,
     "minimumCore": "1.0.0",

@@ -24,6 +24,19 @@ Nothing yet.
 
 ---
 
+## [1.0.1] — 2026-08-22
+
+### Fixed
+
+- **Translations entered in the table window could be lost.** A component has two halves —
+  the one you edit in the inspector, and the one that runs — and the window was writing
+  only the first. UdonSharp periodically copies the running half back over the edited one,
+  notably when leaving Play mode, and that copy erased what had just been typed. The same
+  applied to the key added from a Localized Text inspector. Found while fixing the same
+  defect reported on the Pro role matrix.
+
+---
+
 ## [1.0.0] — 2026-08-19
 
 First release. Requires **FOS Essentials Core 1.0.0**.
