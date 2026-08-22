@@ -24,6 +24,15 @@ Nothing yet.
 
 ---
 
+## [1.3.1] — 2026-08-22
+
+### Added
+
+- The manual is now delivered in **German, Spanish and French** as well as English. The
+  editor tools already spoke four languages; the documentation that explains them did not.
+
+---
+
 ## [1.3.0] — 2026-08-21
 
 ### Added

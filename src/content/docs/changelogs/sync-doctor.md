@@ -18,6 +18,16 @@ the version the FOS Hub shows, and the one the Hub compares against the installe
 
 ---
 
+## [1.2.1] — 2026-08-22
+
+### Added
+
+- The manual is now delivered in **German, Spanish and French** as well as English. The
+  audit window already spoke four languages; the documentation that explains its findings
+  did not.
+
+---
+
 ## [Unreleased]
 
 Nothing yet.

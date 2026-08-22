@@ -18,6 +18,15 @@ is the version the FOS Hub shows, and the one the Hub compares against the insta
 
 ---
 
+## [1.0.1] — 2026-08-22
+
+### Added
+
+- The manual is now delivered in **German, Spanish and French** as well as English. The
+  editor tools already spoke four languages; the documentation that explains them did not.
+
+---
+
 ## [Unreleased]
 
 Nothing yet.
