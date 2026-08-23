@@ -24,6 +24,18 @@ Nothing yet.
 
 ---
 
+## [1.0.2] — 2026-08-22
+
+### Fixed
+
+- **No role could be ticked in a role gate.** Clicking a checkbox set the value and stopped
+  there: the inspector never wrote it back to the component, so the next repaint read the
+  old value and the box emptied itself again. Nothing was ticked, ever, and nothing said
+  why. The same hole applied to the arrival points, where assigning a Transform did not
+  stick either — nobody had run into that one yet. Reported by a customer.
+
+---
+
 ## [1.0.1] — 2026-08-22
 
 ### Fixed
