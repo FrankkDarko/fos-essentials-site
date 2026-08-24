@@ -24,6 +24,23 @@ Nothing yet.
 
 ---
 
+## [2.2.0] — 2026-08-22
+
+### Added
+
+- **Close when leaving**, a checkbox on the tablet manager. Ticked — the default, and what
+  every existing world already does — the tablet closes on its own when the player walks
+  away. Unticked, it stays open until closed by hand.
+
+  It was already possible to switch that behaviour off, in two ways, and neither read as a
+  setting: clearing the reference point, or dragging the close distance to zero. The second
+  one even reads backwards — zero looks like "close immediately", and means "never close".
+
+  When the box is unticked, the close distance slider in the settings panel is locked. A
+  control that moves without doing anything reads as a fault.
+
+---
+
 ## [2.1.1] — 2026-08-21
 
 ### Fixed

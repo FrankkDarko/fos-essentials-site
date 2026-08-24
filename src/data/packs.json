@@ -192,7 +192,7 @@
     "id": "tablet-system",
     "name": "FOS Tablet System — Standard",
     "shortName": "Tablet System",
-    "version": "2.1.1",
+    "version": "2.2.0",
     "edition": "paid",
     "price": null,
     "minimumCore": "1.3.0",
