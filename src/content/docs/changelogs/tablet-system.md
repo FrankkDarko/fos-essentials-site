@@ -24,6 +24,17 @@ Nothing yet.
 
 ---
 
+## [2.2.1] — 2026-08-25
+
+### Fixed
+
+- The world creator now keeps the role their account is listed with. Creating the instance
+  used to force the founder role and discard a higher one set in the account list, so a
+  creator listed as Owner joined as a lesser role. When that role could not assign roles,
+  nobody in the instance could.
+
+---
+
 ## [2.2.0] — 2026-08-22
 
 ### Added

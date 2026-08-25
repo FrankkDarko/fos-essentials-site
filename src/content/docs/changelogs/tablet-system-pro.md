@@ -24,6 +24,18 @@ Nothing yet.
 
 ---
 
+## [1.1.0] — 2026-08-25
+
+### Added
+
+- The role matrix now warns you when the founder role cannot assign roles. That setting
+  locks an instance without a word in game: whoever opens it can hand out no role at all,
+  and the automatic succession does not step in, since it only promotes a player who can
+  already assign roles. It stays a warning, not an error — the setup is fine as long as
+  the people who matter are in the account list with a role that can assign.
+
+---
+
 ## [1.0.2] — 2026-08-22
 
 ### Fixed
