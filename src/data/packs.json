@@ -189,6 +189,33 @@
     "vpmPublished": true
   },
   {
+    "id": "show-control",
+    "name": "FOS Show Control — Standard",
+    "shortName": "Show Control",
+    "version": "1.0.0",
+    "edition": "free",
+    "price": null,
+    "minimumCore": "1.1.0",
+    "requires": [],
+    "sourcePath": "Assets/FOS/ShowControl/Standard",
+    "docsSlug": "packs/show-control",
+    "order": 7,
+    "description": {
+      "en": "A lighting desk for your venue: sixteen cues that your own lights, neon, smoke, confetti and animations all follow together. Light the scene by hand, store the look into a cue, and the whole room crossfades into it — for every player at once, latecomers included.",
+      "fr": "Un pupitre lumière pour votre salle : seize cues que suivent ensemble vos propres projecteurs, néons, fumée, confettis et animations. Éclairez la scène à la main, enregistrez l'ambiance dans une cue, et toute la salle y fond — pour tous les joueurs à la fois, retardataires compris.",
+      "es": "Una mesa de luces para tu sala: dieciséis cues que siguen a la vez tus propios focos, neones, humo, confeti y animaciones. Ilumina la escena a mano, guarda el ambiente en un cue, y toda la sala funde hacia él — para todos los jugadores a la vez, incluidos los que llegan tarde.",
+      "de": "Ein Lichtpult für deine Location: sechzehn Cues, denen deine eigenen Scheinwerfer, Neonflächen, Nebel, Konfetti und Animationen gemeinsam folgen. Leuchte die Szene von Hand aus, speichere die Stimmung in einer Cue, und der ganze Raum blendet dorthin — für alle Spieler gleichzeitig, auch für Nachzügler."
+    },
+    "tagline": {
+      "en": "A lighting, FX and cue console for VRChat worlds",
+      "fr": "Une régie lumière, FX et conduite pour mondes VRChat",
+      "es": "Una mesa de luces, FX y cues para mundos de VRChat",
+      "de": "Ein Licht-, FX- und Cue-Pult für VRChat-Welten"
+    },
+    "vpmName": "studio.frenchoasis.showcontrol",
+    "vpmPublished": false
+  },
+  {
     "id": "tablet-system",
     "name": "FOS Tablet System — Standard",
     "shortName": "Tablet System",
@@ -202,7 +229,7 @@
     ],
     "sourcePath": "Assets/FOS/TabletSystem/Standard",
     "docsSlug": "packs/tablet-system",
-    "order": 7,
+    "order": 8,
     "description": {
       "en": "A tablet players summon in front of them: teleport menu, local toggles, world rules, and a full moderation panel with roles, freeze, isolation, mute and a synchronised log.",
       "fr": "Une tablette que le joueur fait apparaître devant lui : menu de téléportation, interrupteurs locaux, règlement du monde, et un panneau de modération complet avec rôles, immobilisation, isolement, coupure micro et journal synchronisé.",
@@ -231,7 +258,7 @@
     ],
     "sourcePath": "Assets/FOS/TabletSystem/Pro",
     "docsSlug": "packs/tablet-system-pro",
-    "order": 8,
+    "order": 9,
     "description": {
       "en": "Turns the four fixed roles into as many as your world needs, each with its own permissions, plus per-account roles, per-role visibility and per-role spawn points.",
       "fr": "Transforme les quatre rôles figés en autant que votre monde en demande, chacun avec ses propres permissions, plus les rôles par compte, la visibilité par rôle et les points d'apparition par rôle.",
@@ -263,7 +290,7 @@
     ],
     "sourcePath": "Assets/FOS/LockDoorSystem/Standard",
     "docsSlug": "packs/lock-door-system",
-    "order": 9,
+    "order": 10,
     "description": {
       "en": "A door players lock behind them: who is inside, do-not-disturb, anonymous mode, a doorbell with a camera view, and passages reserved to whoever holds the key.",
       "fr": "Une porte que les joueurs verrouillent derrière eux : qui est à l'intérieur, ne pas déranger, mode anonyme, sonnette avec vue caméra, et passages réservés à qui détient la clé.",
