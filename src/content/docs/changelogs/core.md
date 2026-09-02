@@ -24,6 +24,21 @@ Nothing yet.
 
 ---
 
+## [1.4.0] — 2026-09-02
+
+### Added
+
+- **FOS Show Control** joins the line, so the Hub now offers it under *Other tools* and
+  the prefab menu carries its console. Adding a pack to the line always means a new Core:
+  the catalogue of the line and the generated prefab menu both live here.
+
+### Changed
+
+- The prefab menu renumbers its bands to make room for Show Control. Tablet System and
+  Teleport move down the menu; nothing you built changes.
+
+---
+
 ## [1.3.1] — 2026-08-22
 
 ### Added

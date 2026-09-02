@@ -73,6 +73,27 @@
           },
           "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/core-v1.3.1/studio.frenchoasis.core-1.3.1.zip",
           "zipSHA256": "c9271c2eae68abea5ec8fe26b3e27720823abb47fcc3cf0a3071812af3881ae6"
+        },
+        "1.4.0": {
+          "name": "studio.frenchoasis.core",
+          "displayName": "FOS Essentials Core",
+          "version": "1.4.0",
+          "unity": "2022.3",
+          "description": "The shared foundation of every FOS Essentials tool: base behaviour, logging, ownership, player registry, localized inspectors and the Hub.",
+          "author": {
+            "name": "French Oasis Studio",
+            "url": "https://frenchoasis.studio"
+          },
+          "documentationUrl": "https://essentials.frenchoasis.studio/packs/core/",
+          "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/core/",
+          "vpmDependencies": {
+            "com.vrchat.worlds": "^3.10.4"
+          },
+          "legacyFolders": {
+            "Assets/FOS/Core": ""
+          },
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/core-v1.4.0/studio.frenchoasis.core-1.4.0.zip",
+          "zipSHA256": "5044dc7fe788e1fdd0ea00939c4672a26d80e544b6c0e34407fe464826d62178"
         }
       }
     },
@@ -405,6 +426,32 @@
           },
           "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/access-v1.0.1/studio.frenchoasis.access-1.0.1.zip",
           "zipSHA256": "03e50cfb7514ac6dd5e1e0fa4ba4116c4407ec6470a70e3277a942dcfbc283fc"
+        }
+      }
+    },
+    "studio.frenchoasis.showcontrol": {
+      "versions": {
+        "1.0.0": {
+          "name": "studio.frenchoasis.showcontrol",
+          "displayName": "FOS Show Control — Standard",
+          "version": "1.0.0",
+          "unity": "2022.3",
+          "description": "A lighting desk for your venue: sixteen cues that your own lights, neon, smoke, confetti and animations all follow together. Light the scene by hand, store the look into a cue, and the whole room crossfades into it — for every player at once, latecomers included.",
+          "author": {
+            "name": "French Oasis Studio",
+            "url": "https://frenchoasis.studio"
+          },
+          "documentationUrl": "https://essentials.frenchoasis.studio/packs/show-control/",
+          "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/show-control/",
+          "vpmDependencies": {
+            "com.vrchat.worlds": "^3.10.4",
+            "studio.frenchoasis.core": "^1.1.0"
+          },
+          "legacyFolders": {
+            "Assets/FOS/ShowControl/Standard": ""
+          },
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/show-control-v1.0.0/studio.frenchoasis.showcontrol-1.0.0.zip",
+          "zipSHA256": "951bc967a9b5c0f3f716d288b4c0db40de00ac25d3fbafad831ec9f36627761a"
         }
       }
     }
