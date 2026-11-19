@@ -115,6 +115,27 @@
           },
           "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/core-v1.5.0/studio.frenchoasis.core-1.5.0.zip",
           "zipSHA256": "758d39603b6693af71a1b4cf234ec19f57d9a1a2253683147a19947fda42580c"
+        },
+        "1.5.1": {
+          "name": "studio.frenchoasis.core",
+          "displayName": "FOS Essentials Core",
+          "version": "1.5.1",
+          "unity": "2022.3",
+          "description": "The shared foundation of every FOS Essentials tool: base behaviour, logging, ownership, player registry, localized inspectors and the Hub.",
+          "author": {
+            "name": "French Oasis Studio",
+            "url": "https://frenchoasis.studio"
+          },
+          "documentationUrl": "https://essentials.frenchoasis.studio/packs/core/",
+          "changelogUrl": "https://essentials.frenchoasis.studio/changelogs/core/",
+          "vpmDependencies": {
+            "com.vrchat.worlds": "^3.10.4"
+          },
+          "legacyFolders": {
+            "Assets/FOS/Core": ""
+          },
+          "url": "https://github.com/FrankkDarko/fos-essentials-site/releases/download/core-v1.5.1/studio.frenchoasis.core-1.5.1.zip",
+          "zipSHA256": "4bdf3e5ea7fbc5314d6d29d95463fbcd1e3c5aa43f3078b1e1a2d7ed9acf6ae6"
         }
       }
     },

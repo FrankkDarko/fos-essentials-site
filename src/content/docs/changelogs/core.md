@@ -24,6 +24,24 @@ Nothing yet.
 
 ---
 
+## [1.5.1] — 2026-11-19
+
+### Fixed
+
+- **Deleting a stray `Assets/FOS/Core` folder no longer brings it back.** The prefab menu
+  the Hub builds for you was written inside the Core's own folder, at a fixed path, even
+  when the Core is installed through the Creator Companion and lives under `Packages/`. It
+  was rewritten on every editor reload, so the folder reappeared however many times you
+  deleted it — and the Creator Companion, which clears that folder when it installs, was
+  fighting it. The file now lives in `Assets/FOSGenerated/`, outside every pack, and the
+  old copy is removed for you on the next reload.
+- **No more `Cannot add menu item ... already exists` warnings.** That generated menu was
+  being shipped inside the package, so you received ours — listing packs you may not even
+  own — and as soon as your own menu was built there were two copies of it. It is no
+  longer part of any package: it is built from what you actually have installed.
+
+---
+
 ## [1.5.0] — 2026-11-19
 
 ### Added
