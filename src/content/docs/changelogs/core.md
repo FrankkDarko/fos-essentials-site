@@ -24,6 +24,29 @@ Nothing yet.
 
 ---
 
+## [1.5.0] — 2026-11-19
+
+### Added
+
+- **The Hub now tells you when a pack is installed twice** — once through the Creator
+  Companion, under `Packages/`, and once from a `.unitypackage`, under `Assets/`. It names
+  the folder to delete and offers to select it. Until now that situation showed only as
+  Unity errors about two assemblies sharing a name, naming both copies without ever saying
+  which one to remove, while the entire project refused to compile.
+
+### Fixed
+
+- **"Generate missing program assets" no longer stays silent when it cannot do anything.**
+  A file already sitting where the program asset belongs is still left untouched — it is
+  not ours to overwrite — but the Hub now says so, and points at the usual reason: a
+  project with compile errors, where UdonSharp cannot link a program asset to its script.
+  The button looked broken, which is exactly how it was reported.
+- The same action from the menu no longer announces "no missing program asset" at the very
+  moment it failed to create one. It counted creations, not missing assets, and so
+  congratulated you on the failure.
+
+---
+
 ## [1.4.0] — 2026-09-02
 
 ### Added

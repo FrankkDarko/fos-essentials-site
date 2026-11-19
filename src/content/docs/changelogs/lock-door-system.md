@@ -24,6 +24,17 @@ Nothing yet.
 
 ---
 
+## [2.0.2] — 2026-11-19
+
+### Fixed
+
+- **The package no longer ships its own copy of FOS Essentials Core.** Install the Core, and the other free packs this one needs, through the VRChat
+  Creator Companion. A second copy under `Assets/` collided with the Creator
+  Companion's, and Unity stops compiling the whole project as soon as two assemblies
+  share a name.
+
+---
+
 ## [2.0.1] — 2026-08-21
 
 ### Fixed

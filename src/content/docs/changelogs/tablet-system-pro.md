@@ -24,6 +24,20 @@ Nothing yet.
 
 ---
 
+## [1.1.1] — 2026-11-19
+
+### Fixed
+
+- **The pack now declares that it needs FOS Localization**, which its code has always
+  required, so the Hub names it when it is missing instead of leaving you with compile
+  errors that explain nothing.
+- **The package no longer ships its own copy of FOS Essentials Core.** Install the Core, and the other free packs this one needs, through the VRChat
+  Creator Companion. A second copy under `Assets/` collided with the Creator
+  Companion's, and Unity stops compiling the whole project as soon as two assemblies
+  share a name.
+
+---
+
 ## [1.1.0] — 2026-08-25
 
 ### Added
